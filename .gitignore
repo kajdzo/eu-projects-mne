@@ -1,0 +1,15 @@
+# PHP
+/vendor/
+composer.phar
+composer.lock
+*.log
+
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
