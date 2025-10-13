@@ -6,10 +6,12 @@ A PHP-based dashboard for managing EU Projects in Montenegro with user managemen
 ## Recent Changes
 - **October 13, 2025**: Added Projects CRUD functionality
   - Created Projects database table with 26 fields
-  - Implemented Excel import feature for bulk data import
+  - Implemented Excel import feature for bulk data import (50MB max file size)
   - Added Projects list, view, add, edit pages
   - Role-based delete (Admin only, Editor cannot delete)
   - Installed PhpSpreadsheet library for Excel processing
+  - Updated UI with EU flag colors (#003399 blue, #FFCC00 yellow)
+  - Configured PHP server with increased upload limits (50MB) via -d flags
 - **October 9, 2025**: Initial project setup
   - Created user management system with PostgreSQL database
   - Implemented authentication and authorization
@@ -154,10 +156,18 @@ A PHP-based dashboard for managing EU Projects in Montenegro with user managemen
 ## Development
 
 ### Running the Application
-The PHP built-in server runs on port 5000:
+The PHP built-in server runs on port 5000 with increased upload limits:
 ```bash
-php -S 0.0.0.0:5000 -t public
+php -d upload_max_filesize=50M -d post_max_size=50M -d memory_limit=256M -d max_execution_time=300 -S 0.0.0.0:5000 -t public
 ```
+
+**Upload Configuration:**
+- Maximum file upload size: 50 MB
+- Maximum POST size: 50 MB
+- Memory limit: 256 MB
+- Execution timeout: 300 seconds (5 minutes)
+
+These settings enable importing large Excel files with multiple sheets.
 
 ### Database Access
 PostgreSQL database is automatically configured via environment variables:
