@@ -6,6 +6,8 @@ requireAdmin();
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+// Note: Upload limits (50MB) are configured in the workflow command via PHP -d flags
+
 $message = '';
 $error = '';
 $stats = [];
@@ -13,7 +15,19 @@ $stats = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
     $file = $_FILES['excel_file'];
     
-    if ($file['error'] === UPLOAD_ERR_OK) {
+    // Check for upload errors
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        $uploadErrors = [
+            UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+            UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive in the HTML form',
+            UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded',
+            UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+            UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
+            UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+            UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload'
+        ];
+        $error = $uploadErrors[$file['error']] ?? 'Unknown upload error';
+    } elseif ($file['error'] === UPLOAD_ERR_OK) {
         try {
             $spreadsheet = IOFactory::load($file['tmp_name']);
             $pdo = getDbConnection();
@@ -189,8 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
         } catch (Exception $e) {
             $error = "Error reading Excel file: " . $e->getMessage();
         }
-    } else {
-        $error = "Error uploading file. Please try again.";
     }
 }
 
@@ -287,6 +299,7 @@ function parseDecimal($value) {
             <div class="import-form">
                 <h3>Upload Excel File</h3>
                 <p>Upload an Excel file (.xlsx or .xls) containing project data. The file can have multiple sheets, and all will be imported.</p>
+                <p><strong>Maximum file size: 50 MB</strong></p>
                 
                 <form method="POST" enctype="multipart/form-data">
                     <div class="form-group">
