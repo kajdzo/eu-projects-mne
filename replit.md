@@ -158,16 +158,16 @@ A PHP-based dashboard for managing EU Projects in Montenegro with user managemen
 ### Running the Application
 The PHP built-in server runs on port 5000 with increased upload limits:
 ```bash
-php -d upload_max_filesize=50M -d post_max_size=50M -d memory_limit=256M -d max_execution_time=300 -S 0.0.0.0:5000 -t public
+php -d upload_max_filesize=50M -d post_max_size=50M -d memory_limit=1G -d max_execution_time=600 -S 0.0.0.0:5000 -t public
 ```
 
 **Upload Configuration:**
 - Maximum file upload size: 50 MB
 - Maximum POST size: 50 MB
-- Memory limit: 256 MB
-- Execution timeout: 300 seconds (5 minutes)
+- Memory limit: 1 GB (1024 MB)
+- Execution timeout: 600 seconds (10 minutes)
 
-These settings enable importing large Excel files with multiple sheets.
+These settings enable importing very large Excel files with multiple sheets and thousands of rows.
 
 ### Database Access
 PostgreSQL database is automatically configured via environment variables:
