@@ -22,6 +22,38 @@ function initDatabase() {
     
     $pdo->exec($sql);
     
+    // Create projects table
+    $sqlProjects = "CREATE TABLE IF NOT EXISTS projects (
+        id SERIAL PRIMARY KEY,
+        financial_framework VARCHAR(255),
+        programme VARCHAR(255),
+        type_of_programme VARCHAR(255),
+        management_mode VARCHAR(255),
+        sector_1 TEXT,
+        sector_2 TEXT,
+        contract_title TEXT,
+        contract_type VARCHAR(100),
+        commitment_year VARCHAR(10),
+        contract_year VARCHAR(10),
+        start_date DATE,
+        end_date DATE,
+        contract_number VARCHAR(100),
+        contracting_party TEXT,
+        decision_number VARCHAR(100),
+        contracted_eu_contribution DECIMAL(15,2),
+        eu_contribution_mne DECIMAL(15,2),
+        eu_contribution_overall DECIMAL(15,2),
+        total_euro_value DECIMAL(15,2),
+        municipality VARCHAR(255),
+        short_description TEXT,
+        keywords TEXT,
+        project_link TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+    
+    $pdo->exec($sqlProjects);
+    
     // Check if admin user exists
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role = 'Administrator'");
     $stmt->execute();
