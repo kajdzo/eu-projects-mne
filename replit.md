@@ -7,11 +7,12 @@ A PHP-based dashboard for managing EU Projects in Montenegro with user managemen
 - **October 13, 2025**: Added Projects CRUD functionality
   - Created Projects database table with 26 fields
   - Implemented Excel import feature for bulk data import (50MB max file size)
-  - Added Projects list, view, add, edit pages
+  - Added Projects list with pagination (20 items per page)
+  - Added Projects view, add, edit pages
   - Role-based delete (Admin only, Editor cannot delete)
   - Installed PhpSpreadsheet library for Excel processing
   - Updated UI with EU flag colors (#003399 blue, #FFCC00 yellow)
-  - Configured PHP server with increased upload limits (50MB) via -d flags
+  - Configured PHP server with increased resources (50MB upload, 1GB memory) via -d flags
 - **October 9, 2025**: Initial project setup
   - Created user management system with PostgreSQL database
   - Implemented authentication and authorization

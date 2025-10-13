@@ -4,13 +4,26 @@ requireLogin();
 
 $pdo = getDbConnection();
 
-// Get all projects
-$stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
-$projects = $stmt->fetchAll();
+// Pagination settings
+$itemsPerPage = 20;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $itemsPerPage;
 
 // Get total count
 $stmt = $pdo->query("SELECT COUNT(*) FROM projects");
 $totalProjects = $stmt->fetchColumn();
+
+// Calculate total pages
+$totalPages = ceil($totalProjects / $itemsPerPage);
+
+// Get projects for current page
+$stmt = $pdo->prepare("SELECT * FROM projects ORDER BY created_at DESC LIMIT ? OFFSET ?");
+$stmt->execute([$itemsPerPage, $offset]);
+$projects = $stmt->fetchAll();
+
+// Calculate showing range
+$showingFrom = $totalProjects > 0 ? $offset + 1 : 0;
+$showingTo = min($offset + $itemsPerPage, $totalProjects);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +42,7 @@ $totalProjects = $stmt->fetchColumn();
             
             <div class="actions-bar">
                 <div class="stats">
-                    <span>Total Projects: <strong><?= $totalProjects ?></strong></span>
+                    <span>Showing <strong><?= $showingFrom ?>-<?= $showingTo ?></strong> of <strong><?= $totalProjects ?></strong> projects</span>
                 </div>
                 <div class="actions">
                     <?php if (isAdmin()): ?>
@@ -87,6 +100,33 @@ $totalProjects = $stmt->fetchColumn();
                         </tbody>
                     </table>
                 </div>
+                
+                <?php if ($totalPages > 1): ?>
+                    <div class="pagination">
+                        <?php if ($page > 1): ?>
+                            <a href="?page=1" class="pagination-btn">First</a>
+                            <a href="?page=<?= $page - 1 ?>" class="pagination-btn">Previous</a>
+                        <?php endif; ?>
+                        
+                        <div class="pagination-numbers">
+                            <?php
+                            $startPage = max(1, $page - 2);
+                            $endPage = min($totalPages, $page + 2);
+                            
+                            for ($i = $startPage; $i <= $endPage; $i++):
+                            ?>
+                                <a href="?page=<?= $i ?>" class="pagination-number <?= $i === $page ? 'active' : '' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor; ?>
+                        </div>
+                        
+                        <?php if ($page < $totalPages): ?>
+                            <a href="?page=<?= $page + 1 ?>" class="pagination-btn">Next</a>
+                            <a href="?page=<?= $totalPages ?>" class="pagination-btn">Last</a>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>
