@@ -4,6 +4,14 @@
 A PHP-based dashboard for managing EU Projects in Montenegro with user management and role-based access control (RBAC). The system supports two user roles: Administrator and Editor.
 
 ## Recent Changes
+- **October 14, 2025**: Added Public Dashboard
+  - Created public-facing page with 3-column layout (filters, map, projects)
+  - Dynamic filters: Sectors, Municipalities, Programs, Years, Beneficiary, Status
+  - Filters combine with AND logic and populate from distinct database values
+  - Interactive map placeholder ready for geodata integration
+  - Real-time statistics: total projects, funding, ongoing/completed counts
+  - Project cards with status badges (Ongoing/Completed)
+  - Responsive design with mobile support
 - **October 13, 2025**: Added Projects CRUD functionality
   - Created Projects database table with 26 fields
   - Implemented Excel import feature for bulk data import (50MB max file size)
