@@ -6,7 +6,7 @@ A PHP-based dashboard for managing EU Projects in Montenegro with user managemen
 ## Recent Changes
 - **October 14, 2025**: Added Public Dashboard
   - Created public-facing page with 3-column layout (filters, map, projects)
-  - Dynamic filters: Sectors, Municipalities, Programs, Years, Beneficiary, Status
+  - Single-select dropdown filters: Sector, Municipality, Program, Start Year, End Year, Beneficiary, Status
   - Filters combine with AND logic and populate from distinct database values
   - Interactive map placeholder ready for geodata integration
   - Real-time statistics: total projects, funding, ongoing/completed counts

@@ -3,13 +3,13 @@ require_once __DIR__ . '/../config/database.php';
 
 $pdo = getDbConnection();
 
-// Get filter values from GET parameters and normalize to arrays
-$filterSectors = isset($_GET['sectors']) ? (array)$_GET['sectors'] : [];
-$filterMunicipalities = isset($_GET['municipalities']) ? (array)$_GET['municipalities'] : [];
-$filterPrograms = isset($_GET['programs']) ? (array)$_GET['programs'] : [];
+// Get filter values from GET parameters
+$filterSector = isset($_GET['sector']) ? trim($_GET['sector']) : '';
+$filterMunicipality = isset($_GET['municipality']) ? trim($_GET['municipality']) : '';
+$filterProgram = isset($_GET['program']) ? trim($_GET['program']) : '';
 $filterStartYear = isset($_GET['start_year']) ? trim($_GET['start_year']) : '';
 $filterEndYear = isset($_GET['end_year']) ? trim($_GET['end_year']) : '';
-$filterBeneficiary = isset($_GET['beneficiary']) ? (array)$_GET['beneficiary'] : [];
+$filterBeneficiary = isset($_GET['beneficiary']) ? trim($_GET['beneficiary']) : '';
 $filterStatus = isset($_GET['status']) ? trim($_GET['status']) : '';
 
 // Get distinct values for filters
@@ -50,22 +50,20 @@ while ($row = $stmt->fetch()) {
 $where = [];
 $params = [];
 
-if (!empty($filterSectors)) {
-    $placeholders = implode(',', array_fill(0, count($filterSectors), '?'));
-    $where[] = "(sector_1 IN ($placeholders) OR sector_2 IN ($placeholders))";
-    $params = array_merge($params, $filterSectors, $filterSectors);
+if (!empty($filterSector)) {
+    $where[] = "(sector_1 = ? OR sector_2 = ?)";
+    $params[] = $filterSector;
+    $params[] = $filterSector;
 }
 
-if (!empty($filterMunicipalities)) {
-    $placeholders = implode(',', array_fill(0, count($filterMunicipalities), '?'));
-    $where[] = "municipality IN ($placeholders)";
-    $params = array_merge($params, $filterMunicipalities);
+if (!empty($filterMunicipality)) {
+    $where[] = "municipality = ?";
+    $params[] = $filterMunicipality;
 }
 
-if (!empty($filterPrograms)) {
-    $placeholders = implode(',', array_fill(0, count($filterPrograms), '?'));
-    $where[] = "programme IN ($placeholders)";
-    $params = array_merge($params, $filterPrograms);
+if (!empty($filterProgram)) {
+    $where[] = "programme = ?";
+    $params[] = $filterProgram;
 }
 
 if (!empty($filterStartYear)) {
@@ -79,9 +77,8 @@ if (!empty($filterEndYear)) {
 }
 
 if (!empty($filterBeneficiary)) {
-    $placeholders = implode(',', array_fill(0, count($filterBeneficiary), '?'));
-    $where[] = "contracting_party IN ($placeholders)";
-    $params = array_merge($params, $filterBeneficiary);
+    $where[] = "contracting_party = ?";
+    $params[] = $filterBeneficiary;
 }
 
 if ($filterStatus === 'ongoing') {
@@ -202,10 +199,6 @@ foreach ($projects as $project) {
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 0.9rem;
-        }
-        
-        .filter-group select[multiple] {
-            height: 120px;
         }
         
         .filter-buttons {
@@ -356,10 +349,11 @@ foreach ($projects as $project) {
             <h2>Filters</h2>
             <form method="GET" action="">
                 <div class="filter-group">
-                    <label for="sectors">Sectors</label>
-                    <select name="sectors[]" id="sectors" multiple>
+                    <label for="sector">Sector</label>
+                    <select name="sector" id="sector">
+                        <option value="">All Sectors</option>
                         <?php foreach ($sectors as $sector): ?>
-                            <option value="<?= htmlspecialchars($sector) ?>" <?= in_array($sector, $filterSectors) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($sector) ?>" <?= $filterSector === $sector ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($sector) ?>
                             </option>
                         <?php endforeach; ?>
@@ -367,10 +361,11 @@ foreach ($projects as $project) {
                 </div>
                 
                 <div class="filter-group">
-                    <label for="municipalities">Municipalities</label>
-                    <select name="municipalities[]" id="municipalities" multiple>
+                    <label for="municipality">Municipality</label>
+                    <select name="municipality" id="municipality">
+                        <option value="">All Municipalities</option>
                         <?php foreach ($municipalities as $municipality): ?>
-                            <option value="<?= htmlspecialchars($municipality) ?>" <?= in_array($municipality, $filterMunicipalities) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($municipality) ?>" <?= $filterMunicipality === $municipality ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($municipality) ?>
                             </option>
                         <?php endforeach; ?>
@@ -378,10 +373,11 @@ foreach ($projects as $project) {
                 </div>
                 
                 <div class="filter-group">
-                    <label for="programs">Programs</label>
-                    <select name="programs[]" id="programs" multiple>
+                    <label for="program">Program</label>
+                    <select name="program" id="program">
+                        <option value="">All Programs</option>
                         <?php foreach ($programs as $program): ?>
-                            <option value="<?= htmlspecialchars($program) ?>" <?= in_array($program, $filterPrograms) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($program) ?>" <?= $filterProgram === $program ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($program) ?>
                             </option>
                         <?php endforeach; ?>
@@ -414,9 +410,10 @@ foreach ($projects as $project) {
                 
                 <div class="filter-group">
                     <label for="beneficiary">Beneficiary</label>
-                    <select name="beneficiary[]" id="beneficiary" multiple>
+                    <select name="beneficiary" id="beneficiary">
+                        <option value="">All Beneficiaries</option>
                         <?php foreach ($beneficiaries as $beneficiary): ?>
-                            <option value="<?= htmlspecialchars($beneficiary) ?>" <?= in_array($beneficiary, $filterBeneficiary) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($beneficiary) ?>" <?= $filterBeneficiary === $beneficiary ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($beneficiary) ?>
                             </option>
                         <?php endforeach; ?>
