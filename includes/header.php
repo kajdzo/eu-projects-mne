@@ -6,6 +6,7 @@
             <nav class="main-nav">
                 <a href="/dashboard.php">Dashboard</a>
                 <a href="/projects.php">Projects</a>
+                <a href="/public.php">Public View</a>
                 <?php if (isAdmin()): ?>
                     <a href="/users.php">Users</a>
                     <a href="/projects-import.php">Import</a>
