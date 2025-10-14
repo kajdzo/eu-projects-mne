@@ -47,8 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                     continue;
                 }
                 
-                // Get header row
-                $headers = array_map('trim', $rows[0]);
+                // Get header row - normalize headers by removing special spaces and trimming
+                $headers = array_map(function($header) {
+                    // Replace non-breaking spaces with regular spaces
+                    $header = str_replace("\xC2\xA0", ' ', $header);
+                    // Trim regular spaces
+                    return trim($header);
+                }, $rows[0]);
                 
                 // Process data rows
                 for ($i = 1; $i < count($rows); $i++) {
@@ -64,9 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                     foreach ($headers as $index => $header) {
                         $value = $row[$index] ?? '';
                         
+                        // Normalize header for comparison
+                        $normalizedHeader = str_replace("\xC2\xA0", ' ', trim($header));
+                        
                         // Map header to database column
-                        switch (trim($header)) {
+                        switch ($normalizedHeader) {
                             case 'Financial framework':
+                            case 'Assistance framework':
                                 $data['financial_framework'] = $value;
                                 break;
                             case 'Programme':
@@ -212,8 +221,18 @@ function parseDate($value) {
         return null;
     }
     
+    // Check if it's an Excel serial date (numeric)
+    if (is_numeric($value)) {
+        try {
+            $date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value);
+            return $date->format('Y-m-d');
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+    
     // Try to parse common date formats
-    $formats = ['d M Y', 'Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y'];
+    $formats = ['d/m/Y', 'd M Y', 'Y-m-d', 'm/d/Y', 'd-m-Y'];
     
     foreach ($formats as $format) {
         $date = DateTime::createFromFormat($format, trim($value));
