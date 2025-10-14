@@ -12,6 +12,12 @@ A PHP-based dashboard for managing EU Projects in Montenegro with user managemen
   - Real-time statistics: total projects, funding, ongoing/completed counts
   - Project cards with status badges (Ongoing/Completed)
   - Responsive design with mobile support
+- **October 14, 2025**: Fixed Excel Import Parser
+  - Fixed "untitled projects" issue caused by column name mismatches
+  - Added header normalization: removes non-breaking spaces (U+00A0) and trailing whitespace
+  - Added support for "Assistance framework" column (in addition to "Financial framework")
+  - Fixed Excel serial date parsing (numeric dates like 39730 now convert correctly)
+  - Parser now handles special characters and whitespace variations in Excel headers
 - **October 13, 2025**: Added Projects CRUD functionality
   - Created Projects database table with 26 fields
   - Implemented Excel import feature for bulk data import (50MB max file size)
