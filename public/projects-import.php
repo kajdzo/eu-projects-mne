@@ -49,6 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                 
                 // Get header row - normalize headers by removing special spaces and trimming
                 $headers = array_map(function($header) {
+                    // Handle null/empty headers
+                    if ($header === null || $header === '') {
+                        return '';
+                    }
                     // Replace non-breaking spaces with regular spaces
                     $header = str_replace("\xC2\xA0", ' ', $header);
                     // Trim regular spaces
@@ -70,6 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                         $value = $row[$index] ?? '';
                         
                         // Normalize header for comparison
+                        if ($header === null || $header === '') {
+                            continue;
+                        }
                         $normalizedHeader = str_replace("\xC2\xA0", ' ', trim($header));
                         
                         // Map header to database column
