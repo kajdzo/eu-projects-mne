@@ -79,38 +79,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                         }
                         $normalizedHeader = str_replace("\xC2\xA0", ' ', trim($header));
                         
+                        // Helper to trim string values
+                        $trimmedValue = is_string($value) ? trim($value) : $value;
+                        
                         // Map header to database column
                         switch ($normalizedHeader) {
                             case 'Financial framework':
                             case 'Assistance framework':
-                                $data['financial_framework'] = $value;
+                                $data['financial_framework'] = $trimmedValue;
                                 break;
                             case 'Programme':
-                                $data['programme'] = $value;
+                                $data['programme'] = $trimmedValue;
                                 break;
                             case 'Type of programme':
-                                $data['type_of_programme'] = $value;
+                                $data['type_of_programme'] = $trimmedValue;
                                 break;
                             case 'Management mode':
-                                $data['management_mode'] = $value;
+                                $data['management_mode'] = $trimmedValue;
                                 break;
                             case 'Sector 1':
-                                $data['sector_1'] = $value;
+                                $data['sector_1'] = $trimmedValue;
                                 break;
                             case 'Sector 2':
-                                $data['sector_2'] = $value;
+                                $data['sector_2'] = $trimmedValue;
                                 break;
                             case 'Contract title':
-                                $data['contract_title'] = $value;
+                                $data['contract_title'] = $trimmedValue;
                                 break;
                             case 'Contract type':
-                                $data['contract_type'] = $value;
+                                $data['contract_type'] = $trimmedValue;
                                 break;
                             case 'Commitment year':
-                                $data['commitment_year'] = $value;
+                                $data['commitment_year'] = $trimmedValue;
                                 break;
                             case 'Contract year':
-                                $data['contract_year'] = $value;
+                                $data['contract_year'] = $trimmedValue;
                                 break;
                             case 'Start date':
                                 $data['start_date'] = parseDate($value);
@@ -119,13 +122,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                                 $data['end_date'] = parseDate($value);
                                 break;
                             case 'Contract number':
-                                $data['contract_number'] = $value;
+                                $data['contract_number'] = $trimmedValue;
                                 break;
                             case 'Contracting party':
-                                $data['contracting_party'] = $value;
+                                $data['contracting_party'] = $trimmedValue;
                                 break;
                             case 'Decision number':
-                                $data['decision_number'] = $value;
+                                $data['decision_number'] = $trimmedValue;
                                 break;
                             case 'Contracted EU contribution':
                             case 'Contracted EU contribution  ':
@@ -142,16 +145,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                                 $data['total_euro_value'] = parseDecimal($value);
                                 break;
                             case 'Municipality':
-                                $data['municipality'] = $value;
+                                $data['municipality'] = $trimmedValue;
                                 break;
                             case 'Short description':
-                                $data['short_description'] = $value;
+                                $data['short_description'] = $trimmedValue;
                                 break;
                             case 'Keywords':
-                                $data['keywords'] = $value;
+                                $data['keywords'] = $trimmedValue;
                                 break;
                             case 'Links to project page':
-                                $data['project_link'] = $value;
+                                $data['project_link'] = $trimmedValue;
                                 break;
                         }
                     }
