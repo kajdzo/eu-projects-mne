@@ -12,6 +12,10 @@ A PHP-based dashboard for managing EU Projects in Montenegro with user managemen
   - Real-time statistics: total projects, funding, ongoing/completed counts
   - Project cards with status badges (Ongoing/Completed)
   - Responsive design with mobile support
+- **October 15, 2025**: Added Data Trimming to Excel Import
+  - All text values are now automatically trimmed during import (removes leading/trailing spaces)
+  - Filter queries use TRIM() to eliminate duplicate filter options
+  - Prevents issues like "Danilovgrad" and "Danilovgrad " appearing as separate values
 - **October 15, 2025**: Fixed Excel Import Parser (v2)
   - Fixed PHP 8.2 deprecation error when processing null/empty Excel header cells
   - Added proper null checks before str_replace() operations to prevent errors
