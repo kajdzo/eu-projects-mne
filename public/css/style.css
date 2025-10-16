@@ -612,3 +612,92 @@ input[type="file"]:hover {
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
 }
+
+/* Public Project Details */
+.project-title-link {
+    color: #003399;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.project-title-link:hover {
+    color: #0055CC;
+    text-decoration: underline;
+}
+
+.project-status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    margin: 1rem 0;
+}
+
+.project-status-badge.ongoing {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.project-status-badge.completed {
+    background-color: #9E9E9E;
+    color: white;
+}
+
+.breadcrumb {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.breadcrumb a {
+    color: #003399;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.public-header {
+    background-color: #003399;
+    color: white;
+    padding: 1.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.public-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.public-header nav {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.public-header nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.public-header nav a:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.public-footer {
+    background-color: #003399;
+    color: white;
+    padding: 2rem 0;
+    margin-top: 4rem;
+    text-align: center;
+}
+
+.detail-section .amount {
+    color: #003399;
+    font-size: 1.1rem;
+    font-weight: 600;
+}

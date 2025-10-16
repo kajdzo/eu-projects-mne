@@ -169,7 +169,9 @@ if ($isAjax) {
         $isOngoing = !$project['end_date'] || strtotime($project['end_date']) >= time();
         $projectsHtml .= '<div class="project-card">';
         $projectsHtml .= '<h3>';
+        $projectsHtml .= '<a href="/public-project.php?id=' . $project['id'] . '" class="project-title-link">';
         $projectsHtml .= htmlspecialchars($project['contract_title'] ?? 'Untitled Project');
+        $projectsHtml .= '</a>';
         $projectsHtml .= '<span class="status-badge ' . ($isOngoing ? 'status-ongoing' : 'status-completed') . '">';
         $projectsHtml .= $isOngoing ? 'Ongoing' : 'Completed';
         $projectsHtml .= '</span>';
@@ -594,7 +596,9 @@ $hasMore = ($offset + $limit) < $totalProjects;
                         ?>
                         <div class="project-card">
                             <h3>
-                                <?= htmlspecialchars($project['contract_title'] ?? 'Untitled Project') ?>
+                                <a href="/public-project.php?id=<?= $project['id'] ?>" class="project-title-link">
+                                    <?= htmlspecialchars($project['contract_title'] ?? 'Untitled Project') ?>
+                                </a>
                                 <span class="status-badge <?= $isOngoing ? 'status-ongoing' : 'status-completed' ?>">
                                     <?= $isOngoing ? 'Ongoing' : 'Completed' ?>
                                 </span>
