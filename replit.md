@@ -4,6 +4,12 @@
 A PHP-based dashboard for managing EU Projects in Montenegro with user management and role-based access control (RBAC). The system supports two user roles: Administrator and Editor.
 
 ## Recent Changes
+- **October 16, 2025**: Optimized Filter Options with Case-Insensitive Deduplication
+  - Updated filter queries to use case-insensitive DISTINCT (MIN + UPPER grouping)
+  - Merged duplicate options like "Podgorica", "PODGORICA", "podgorica" into single option
+  - Updated WHERE clauses to use case-insensitive matching (UPPER comparison)
+  - Cleaner filter dropdowns with significantly fewer duplicate options
+  - Filtering works correctly regardless of text casing in database
 - **October 16, 2025**: Added "Load More" Pagination to Public Dashboard
   - Implemented pagination with LIMIT 20 projects per load for faster page load times
   - Added "Load More" button with AJAX functionality to dynamically load more projects
