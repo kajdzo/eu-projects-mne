@@ -135,6 +135,9 @@ foreach ($projects as $project) {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .logo-placeholder {
@@ -143,6 +146,34 @@ foreach ($projects as $project) {
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+        
+        .public-nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .public-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+        
+        .public-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .public-nav .btn-home {
+            background-color: #FFCC00;
+            color: #003399;
+            font-weight: 600;
+        }
+        
+        .public-nav .btn-home:hover {
+            background-color: #e6b800;
         }
         
         .logo-box {
@@ -339,6 +370,10 @@ foreach ($projects as $project) {
             <div class="logo-placeholder">
                 <div class="logo-box">🇪🇺</div>
                 <div>EU Projects in Montenegro</div>
+            </div>
+            <div class="public-nav">
+                <a href="/home.php" class="btn-home">Home</a>
+                <a href="/login.php">Admin Login</a>
             </div>
         </div>
     </div>
