@@ -63,8 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                 for ($i = 1; $i < count($rows); $i++) {
                     $row = $rows[$i];
                     
-                    // Skip empty rows
-                    if (empty(array_filter($row))) {
+                    // Skip empty rows (including rows with only whitespace or formatting)
+                    $rowData = array_filter(array_map(function($cell) {
+                        return is_string($cell) ? trim($cell) : $cell;
+                    }, $row));
+                    
+                    if (empty($rowData)) {
                         continue;
                     }
                     
