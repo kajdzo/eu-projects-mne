@@ -87,34 +87,89 @@ if ($filterStatus === 'ongoing') {
     $where[] = "end_date < CURRENT_DATE";
 }
 
-// Build final query
+// Pagination
+$limit = 20; // Projects per page
+$offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+$isAjax = isset($_GET['ajax']) && $_GET['ajax'] === '1';
+
+// Build count query for statistics
+$countSql = "SELECT COUNT(*) as total FROM projects";
+if (!empty($where)) {
+    $countSql .= " WHERE " . implode(' AND ', $where);
+}
+$countStmt = $pdo->prepare($countSql);
+$countStmt->execute($params);
+$totalProjects = (int)$countStmt->fetchColumn();
+
+// Build final query with pagination
 $sql = "SELECT * FROM projects";
 if (!empty($where)) {
     $sql .= " WHERE " . implode(' AND ', $where);
 }
-$sql .= " ORDER BY created_at DESC";
+$sql .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+
+$params[] = $limit;
+$params[] = $offset;
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $projects = $stmt->fetchAll();
 
-// Calculate statistics
-$totalProjects = count($projects);
-$totalFunding = 0;
-$ongoingCount = 0;
-$completedCount = 0;
+// Calculate statistics from all projects (not just current page)
+$statsSql = "SELECT 
+    SUM(eu_contribution_mne) as total_funding,
+    COUNT(CASE WHEN end_date IS NULL OR end_date >= CURRENT_DATE THEN 1 END) as ongoing_count,
+    COUNT(CASE WHEN end_date < CURRENT_DATE THEN 1 END) as completed_count
+FROM projects";
+if (!empty($where)) {
+    $statsSql .= " WHERE " . implode(' AND ', array_slice($where, 0, count($where)));
+}
+$statsParams = array_slice($params, 0, count($params) - 2); // Remove LIMIT and OFFSET
+$statsStmt = $pdo->prepare($statsSql);
+$statsStmt->execute($statsParams);
+$stats = $statsStmt->fetch();
 
-foreach ($projects as $project) {
-    if ($project['eu_contribution_mne']) {
-        $totalFunding += $project['eu_contribution_mne'];
+$totalFunding = $stats['total_funding'] ?? 0;
+$ongoingCount = $stats['ongoing_count'] ?? 0;
+$completedCount = $stats['completed_count'] ?? 0;
+
+// If AJAX request, return JSON
+if ($isAjax) {
+    header('Content-Type: application/json');
+    $projectsHtml = '';
+    
+    foreach ($projects as $project) {
+        $isOngoing = !$project['end_date'] || strtotime($project['end_date']) >= time();
+        $projectsHtml .= '<div class="project-card">';
+        $projectsHtml .= '<h3>';
+        $projectsHtml .= htmlspecialchars($project['contract_title'] ?? 'Untitled Project');
+        $projectsHtml .= '<span class="status-badge ' . ($isOngoing ? 'status-ongoing' : 'status-completed') . '">';
+        $projectsHtml .= $isOngoing ? 'Ongoing' : 'Completed';
+        $projectsHtml .= '</span>';
+        $projectsHtml .= '</h3>';
+        $projectsHtml .= '<div class="meta">';
+        $projectsHtml .= '<strong>Programme:</strong> ' . htmlspecialchars($project['programme'] ?? 'N/A') . '<br>';
+        $projectsHtml .= '<strong>Municipality:</strong> ' . htmlspecialchars($project['municipality'] ?? 'N/A') . '<br>';
+        $projectsHtml .= '<strong>Period:</strong> ';
+        $projectsHtml .= ($project['start_date'] ? date('Y', strtotime($project['start_date'])) : 'N/A') . ' - ';
+        $projectsHtml .= ($project['end_date'] ? date('Y', strtotime($project['end_date'])) : 'Ongoing');
+        $projectsHtml .= '</div>';
+        if ($project['eu_contribution_mne']) {
+            $projectsHtml .= '<div class="amount">€' . number_format($project['eu_contribution_mne'], 2) . '</div>';
+        }
+        $projectsHtml .= '</div>';
     }
     
-    if (!$project['end_date'] || strtotime($project['end_date']) >= time()) {
-        $ongoingCount++;
-    } else {
-        $completedCount++;
-    }
+    echo json_encode([
+        'html' => $projectsHtml,
+        'hasMore' => ($offset + $limit) < $totalProjects,
+        'nextOffset' => $offset + $limit
+    ]);
+    exit;
 }
+
+// Calculate if there are more projects to load
+$hasMore = ($offset + $limit) < $totalProjects;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -531,6 +586,14 @@ foreach ($projects as $project) {
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
+            
+            <?php if ($hasMore): ?>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button id="loadMoreBtn" class="btn btn-primary" style="min-width: 200px;">
+                        <span class="btn-text">Load More Projects</span>
+                    </button>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     
@@ -540,6 +603,49 @@ foreach ($projects as $project) {
             const btn = this.querySelector('button[type="submit"]');
             btn.classList.add('loading');
         });
+        
+        // Load More functionality
+        <?php if ($hasMore): ?>
+        let currentOffset = <?= $limit ?>;
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        
+        loadMoreBtn.addEventListener('click', function() {
+            // Show loading state
+            loadMoreBtn.classList.add('loading');
+            loadMoreBtn.disabled = true;
+            
+            // Build URL with current filters and offset
+            const params = new URLSearchParams(window.location.search);
+            params.set('ajax', '1');
+            params.set('offset', currentOffset);
+            
+            fetch('/public.php?' + params.toString())
+                .then(response => response.json())
+                .then(data => {
+                    // Append new projects to the list
+                    const projectsList = document.querySelector('.projects-list');
+                    projectsList.insertAdjacentHTML('beforeend', data.html);
+                    
+                    // Update offset for next load
+                    currentOffset = data.nextOffset;
+                    
+                    // Remove loading state
+                    loadMoreBtn.classList.remove('loading');
+                    loadMoreBtn.disabled = false;
+                    
+                    // Hide button if no more projects
+                    if (!data.hasMore) {
+                        loadMoreBtn.parentElement.remove();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading more projects:', error);
+                    loadMoreBtn.classList.remove('loading');
+                    loadMoreBtn.disabled = false;
+                    alert('Error loading more projects. Please try again.');
+                });
+        });
+        <?php endif; ?>
     </script>
 </body>
 </html>
