@@ -4,6 +4,15 @@
 A PHP-based dashboard for managing EU Projects in Montenegro with user management and role-based access control (RBAC). The system supports two user roles: Administrator and Editor.
 
 ## Recent Changes
+- **October 16, 2025**: Added Public Home Page
+  - Created new landing page (home.php) as the main entry point for public visitors
+  - Hero section with EU flag colors, call-to-action buttons (Explore Projects, Admin Login)
+  - Statistics section showing EU investment, active projects, sectors, and municipalities
+  - Features grid explaining dashboard capabilities (search/filter, project details, map, statistics)
+  - About section with information about EU support to Montenegro
+  - Updated index.php to redirect to home page (instead of login) for public visitors
+  - Added navigation on public dashboard header (Home and Admin Login links)
+  - Fully responsive design with mobile support
 - **October 16, 2025**: Added Spinner Animation to Action Buttons
   - Implemented CSS spinner animation for visual feedback on button clicks
   - Added JavaScript handlers to all form submit buttons (login, import, filters, user/project forms)
@@ -67,7 +76,9 @@ A PHP-based dashboard for managing EU Projects in Montenegro with user managemen
 ├── public/
 │   ├── css/
 │   │   └── style.css   # Application styles
-│   ├── index.php       # Entry point (redirects to dashboard/login)
+│   ├── index.php       # Entry point (redirects to home/dashboard)
+│   ├── home.php        # Public home/landing page
+│   ├── public.php      # Public dashboard with filters
 │   ├── login.php       # Login page
 │   ├── logout.php      # Logout handler
 │   ├── dashboard.php   # Main dashboard
