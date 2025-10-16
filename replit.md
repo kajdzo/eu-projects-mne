@@ -4,6 +4,14 @@
 A PHP-based dashboard for managing EU Projects in Montenegro with user management and role-based access control (RBAC). The system supports two user roles: Administrator and Editor.
 
 ## Recent Changes
+- **October 16, 2025**: Added "Load More" Pagination to Public Dashboard
+  - Implemented pagination with LIMIT 20 projects per load for faster page load times
+  - Added "Load More" button with AJAX functionality to dynamically load more projects
+  - Statistics remain accurate across all pages (not just visible projects)
+  - Filter parameters are preserved when loading additional projects
+  - Spinner animation on Load More button for visual feedback
+  - Button automatically disappears when all projects are loaded
+  - Improved performance and user experience for large datasets
 - **October 16, 2025**: Added Public Home Page
   - Created new landing page (home.php) as the main entry point for public visitors
   - Hero section with EU flag colors, call-to-action buttons (Explore Projects, Admin Login)
