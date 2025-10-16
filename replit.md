@@ -4,6 +4,11 @@
 A PHP-based dashboard for managing EU Projects in Montenegro with user management and role-based access control (RBAC). The system supports two user roles: Administrator and Editor.
 
 ## Recent Changes
+- **October 16, 2025**: Added Spinner Animation to Action Buttons
+  - Implemented CSS spinner animation for visual feedback on button clicks
+  - Added JavaScript handlers to all form submit buttons (login, import, filters, user/project forms)
+  - Buttons show loading spinner and become disabled during form submission
+  - Improves user experience by providing clear feedback for async operations
 - **October 14, 2025**: Added Public Dashboard
   - Created public-facing page with 3-column layout (filters, map, projects)
   - Single-select dropdown filters: Sector, Municipality, Program, Start Year, End Year, Beneficiary, Status
