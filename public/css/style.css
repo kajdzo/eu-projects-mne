@@ -45,6 +45,8 @@ body {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     transition: background-color 0.3s;
+    line-height: 1;
+    text-align: center;
 }
 
 .main-nav a:hover {
@@ -161,6 +163,8 @@ body {
     cursor: pointer;
     text-decoration: none;
     transition: background-color 0.3s;
+    line-height: 1;
+    text-align: center;
 }
 
 .btn-primary {
@@ -618,6 +622,7 @@ input[type="file"]:hover {
     color: #003399;
     text-decoration: none;
     transition: color 0.3s;
+    line-height: 1;
 }
 
 .project-title-link:hover {
@@ -652,6 +657,7 @@ input[type="file"]:hover {
 .breadcrumb a {
     color: #003399;
     text-decoration: none;
+    line-height: 1;
 }
 
 .breadcrumb a:hover {
@@ -682,6 +688,8 @@ input[type="file"]:hover {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     transition: background-color 0.3s;
+    line-height: 1;
+    text-align: center;
 }
 
 .public-header nav a:hover {
