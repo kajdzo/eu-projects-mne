@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/../config/init.php';
 
-// Redirect to dashboard if logged in, otherwise to login
+// Redirect to dashboard if logged in, otherwise to home page
 if (isLoggedIn()) {
     header('Location: /dashboard.php');
 } else {
-    header('Location: /login.php');
+    header('Location: /home.php');
 }
 exit;
