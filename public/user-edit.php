@@ -144,11 +144,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
                 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Update User</button>
+                    <button type="submit" class="btn btn-primary"><span class="btn-text">Update User</span></button>
                     <a href="<?= isAdmin() ? '/users.php' : '/dashboard.php' ?>" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
+    
+    <script>
+        // Add spinner to button on form submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const btn = this.querySelector('button[type="submit"]');
+            btn.classList.add('loading');
+        });
+    </script>
 </body>
 </html>

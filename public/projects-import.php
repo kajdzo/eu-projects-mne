@@ -343,7 +343,7 @@ function parseDecimal($value) {
                     </div>
                     
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Import Projects</button>
+                        <button type="submit" class="btn btn-primary"><span class="btn-text">Import Projects</span></button>
                         <a href="/projects.php" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
@@ -369,5 +369,16 @@ function parseDecimal($value) {
             </div>
         </div>
     </div>
+    
+    <script>
+        // Add spinner to button on form submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('excel_file');
+            if (fileInput.files.length > 0) {
+                const btn = this.querySelector('button[type="submit"]');
+                btn.classList.add('loading');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" id="password" name="password" required>
                 </div>
                 
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary"><span class="btn-text">Login</span></button>
             </form>
             
             <div class="login-info">
@@ -70,5 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+    
+    <script>
+        // Add spinner to button on form submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const btn = this.querySelector('button[type="submit"]');
+            btn.classList.add('loading');
+        });
+    </script>
 </body>
 </html>

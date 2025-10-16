@@ -430,7 +430,7 @@ foreach ($projects as $project) {
                 </div>
                 
                 <div class="filter-buttons">
-                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <button type="submit" class="btn btn-primary"><span class="btn-text">Apply Filters</span></button>
                     <a href="/public.php" class="btn btn-secondary">Reset Filters</a>
                 </div>
             </form>
@@ -498,5 +498,13 @@ foreach ($projects as $project) {
             </div>
         </div>
     </div>
+    
+    <script>
+        // Add spinner to button on form submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const btn = this.querySelector('button[type="submit"]');
+            btn.classList.add('loading');
+        });
+    </script>
 </body>
 </html>
