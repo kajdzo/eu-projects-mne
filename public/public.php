@@ -73,23 +73,23 @@ while ($row = $stmt->fetch()) {
     $years[] = $row['year'];
 }
 
-// Build WHERE clause based on filters
+// Build WHERE clause based on filters (case-insensitive)
 $where = [];
 $params = [];
 
 if (!empty($filterSector)) {
-    $where[] = "(sector_1 = ? OR sector_2 = ?)";
+    $where[] = "(UPPER(TRIM(sector_1)) = UPPER(?) OR UPPER(TRIM(sector_2)) = UPPER(?))";
     $params[] = $filterSector;
     $params[] = $filterSector;
 }
 
 if (!empty($filterMunicipality)) {
-    $where[] = "municipality = ?";
+    $where[] = "UPPER(TRIM(municipality)) = UPPER(?)";
     $params[] = $filterMunicipality;
 }
 
 if (!empty($filterProgram)) {
-    $where[] = "programme = ?";
+    $where[] = "UPPER(TRIM(programme)) = UPPER(?)";
     $params[] = $filterProgram;
 }
 
@@ -104,7 +104,7 @@ if (!empty($filterEndYear)) {
 }
 
 if (!empty($filterBeneficiary)) {
-    $where[] = "contracting_party = ?";
+    $where[] = "UPPER(TRIM(contracting_party)) = UPPER(?)";
     $params[] = $filterBeneficiary;
 }
 
