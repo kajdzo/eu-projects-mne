@@ -209,6 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                     'imported' => $sheetImported,
                     'skipped' => $sheetSkipped
                 ];
+
+                //break;
             }
             
             $stats = [
