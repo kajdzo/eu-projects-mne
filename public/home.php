@@ -47,6 +47,9 @@
             font-weight: 600;
             transition: all 0.3s;
             display: inline-block;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
         }
         
         .hero-btn-primary {

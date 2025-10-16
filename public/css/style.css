@@ -165,6 +165,7 @@ body {
     transition: background-color 0.3s;
     line-height: 1;
     text-align: center;
+    white-space: nowrap;
 }
 
 .btn-primary {
@@ -495,6 +496,9 @@ input[type="file"]:hover {
     border-radius: 4px;
     font-size: 0.9rem;
     transition: background-color 0.3s;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .pagination-btn:hover {
@@ -515,6 +519,9 @@ input[type="file"]:hover {
     font-size: 0.9rem;
     transition: all 0.3s;
     border: 1px solid #ddd;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .pagination-number:hover {
