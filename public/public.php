@@ -12,9 +12,18 @@ $filterEndYear = isset($_GET['end_year']) ? trim($_GET['end_year']) : '';
 $filterBeneficiary = isset($_GET['beneficiary']) ? trim($_GET['beneficiary']) : '';
 $filterStatus = isset($_GET['status']) ? trim($_GET['status']) : '';
 
-// Get distinct values for filters
+// Get distinct values for filters (case-insensitive)
 $sectors = [];
-$stmt = $pdo->query("SELECT DISTINCT TRIM(sector_1) as sector FROM projects WHERE sector_1 IS NOT NULL AND TRIM(sector_1) != '' UNION SELECT DISTINCT TRIM(sector_2) as sector FROM projects WHERE sector_2 IS NOT NULL AND TRIM(sector_2) != '' ORDER BY sector");
+$stmt = $pdo->query("
+    SELECT MIN(TRIM(sector)) as sector 
+    FROM (
+        SELECT sector_1 as sector FROM projects WHERE sector_1 IS NOT NULL AND TRIM(sector_1) != '' 
+        UNION 
+        SELECT sector_2 as sector FROM projects WHERE sector_2 IS NOT NULL AND TRIM(sector_2) != ''
+    ) s
+    GROUP BY UPPER(TRIM(sector))
+    ORDER BY UPPER(TRIM(sector))
+");
 while ($row = $stmt->fetch()) {
     if (!empty($row['sector'])) {
         $sectors[] = $row['sector'];
@@ -22,19 +31,37 @@ while ($row = $stmt->fetch()) {
 }
 
 $municipalities = [];
-$stmt = $pdo->query("SELECT DISTINCT TRIM(municipality) as municipality FROM projects WHERE municipality IS NOT NULL AND TRIM(municipality) != '' ORDER BY municipality");
+$stmt = $pdo->query("
+    SELECT MIN(TRIM(municipality)) as municipality 
+    FROM projects 
+    WHERE municipality IS NOT NULL AND TRIM(municipality) != '' 
+    GROUP BY UPPER(TRIM(municipality))
+    ORDER BY UPPER(TRIM(municipality))
+");
 while ($row = $stmt->fetch()) {
     $municipalities[] = $row['municipality'];
 }
 
 $programs = [];
-$stmt = $pdo->query("SELECT DISTINCT TRIM(programme) as programme FROM projects WHERE programme IS NOT NULL AND TRIM(programme) != '' ORDER BY programme");
+$stmt = $pdo->query("
+    SELECT MIN(TRIM(programme)) as programme 
+    FROM projects 
+    WHERE programme IS NOT NULL AND TRIM(programme) != '' 
+    GROUP BY UPPER(TRIM(programme))
+    ORDER BY UPPER(TRIM(programme))
+");
 while ($row = $stmt->fetch()) {
     $programs[] = $row['programme'];
 }
 
 $beneficiaries = [];
-$stmt = $pdo->query("SELECT DISTINCT TRIM(contracting_party) as contracting_party FROM projects WHERE contracting_party IS NOT NULL AND TRIM(contracting_party) != '' ORDER BY contracting_party");
+$stmt = $pdo->query("
+    SELECT MIN(TRIM(contracting_party)) as contracting_party 
+    FROM projects 
+    WHERE contracting_party IS NOT NULL AND TRIM(contracting_party) != '' 
+    GROUP BY UPPER(TRIM(contracting_party))
+    ORDER BY UPPER(TRIM(contracting_party))
+");
 while ($row = $stmt->fetch()) {
     $beneficiaries[] = $row['contracting_party'];
 }
