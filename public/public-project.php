@@ -38,7 +38,6 @@ if ($project['end_date']) {
             <nav>
                 <a href="/home.php">Home</a>
                 <a href="/public.php">Projects Dashboard</a>
-                <a href="/login.php">Admin Login</a>
             </nav>
         </div>
     </header>

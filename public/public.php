@@ -457,7 +457,6 @@ $hasMore = ($offset + $limit) < $totalProjects;
             </div>
             <div class="public-nav">
                 <a href="/home.php" class="btn-home">Home</a>
-                <a href="/login.php">Admin Login</a>
             </div>
         </div>
     </div>
