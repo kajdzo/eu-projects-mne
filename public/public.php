@@ -465,7 +465,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
         }
         
         .projects-list {
-            max-height: 600px;
+            max-height: 790px;
             overflow-y: auto;
         }
         
