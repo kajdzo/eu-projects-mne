@@ -421,27 +421,46 @@ $hasMore = ($offset + $limit) < $totalProjects;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
+        .statistics-top {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
         .statistics {
             margin-bottom: 1.5rem;
         }
         
         .stat-box {
             background: #e6f0ff;
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 0.75rem;
-            border-left: 4px solid #003399;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border-left: none;
+            border-top: 4px solid #003399;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,51,153,0.2);
         }
         
         .stat-box h4 {
             color: #666;
-            font-size: 0.85rem;
-            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .stat-box .value {
             color: #003399;
-            font-size: 1.3rem;
+            font-size: 1.8rem;
             font-weight: 700;
         }
         
@@ -512,6 +531,16 @@ $hasMore = ($offset + $limit) < $totalProjects;
                 position: relative;
                 top: 0;
             }
+            
+            .statistics-top {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .statistics-top {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -525,6 +554,26 @@ $hasMore = ($offset + $limit) < $totalProjects;
             <div class="public-nav">
                 <a href="/home.php" class="btn-home">Home</a>
             </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Section -->
+    <div class="statistics-top">
+        <div class="stat-box">
+            <h4>Total Projects</h4>
+            <div class="value"><?= number_format($totalProjects) ?></div>
+        </div>
+        <div class="stat-box">
+            <h4>Total EU Funding</h4>
+            <div class="value">€<?= number_format($totalFunding, 2) ?></div>
+        </div>
+        <div class="stat-box">
+            <h4>Ongoing Projects</h4>
+            <div class="value"><?= number_format($ongoingCount) ?></div>
+        </div>
+        <div class="stat-box">
+            <h4>Completed Projects</h4>
+            <div class="value"><?= number_format($completedCount) ?></div>
         </div>
     </div>
     
@@ -642,26 +691,6 @@ $hasMore = ($offset + $limit) < $totalProjects;
         
         <!-- Results Section -->
         <div class="results-section">
-            <h2 style="color: #003399; margin-bottom: 1rem;">Statistics</h2>
-            <div class="statistics">
-                <div class="stat-box">
-                    <h4>Total Projects</h4>
-                    <div class="value"><?= number_format($totalProjects) ?></div>
-                </div>
-                <div class="stat-box">
-                    <h4>Total EU Funding</h4>
-                    <div class="value">€<?= number_format($totalFunding, 2) ?></div>
-                </div>
-                <div class="stat-box">
-                    <h4>Ongoing Projects</h4>
-                    <div class="value"><?= number_format($ongoingCount) ?></div>
-                </div>
-                <div class="stat-box">
-                    <h4>Completed Projects</h4>
-                    <div class="value"><?= number_format($completedCount) ?></div>
-                </div>
-            </div>
-            
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 style="color: #003399; margin: 0;">Projects (<?= $totalProjects ?>)</h2>
                 <?php if ($totalProjects > 0): ?>
@@ -823,8 +852,8 @@ $hasMore = ($offset + $limit) < $totalProjects;
                     const doc = parser.parseFromString(html, 'text/html');
                     
                     // Update statistics
-                    const newStats = doc.querySelector('.statistics');
-                    document.querySelector('.statistics').innerHTML = newStats.innerHTML;
+                    const newStats = doc.querySelector('.statistics-top');
+                    document.querySelector('.statistics-top').innerHTML = newStats.innerHTML;
                     
                     // Update projects list
                     const newProjectsList = doc.querySelector('.projects-list');
