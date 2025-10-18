@@ -252,6 +252,7 @@ $programStats = $programStmt->fetchAll();
             },
             options: {
                 ...defaultChartOptions,
+                indexAxis: 'y',
                 plugins: {
                     ...defaultChartOptions.plugins,
                     legend: {
@@ -259,7 +260,7 @@ $programStats = $programStmt->fetchAll();
                     }
                 },
                 scales: {
-                    y: {
+                    x: {
                         beginAtZero: true,
                         ticks: {
                             stepSize: 1
