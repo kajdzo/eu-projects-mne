@@ -4,6 +4,13 @@
 A PHP-based dashboard for managing EU Projects in Montenegro with user management and role-based access control (RBAC). The system supports two user roles: Administrator and Editor.
 
 ## Recent Changes
+- **October 18, 2025**: Added Comprehensive Dashboard Statistics and Charts
+  - Added 4 overview statistics cards: Total Projects, Total EU Funding, Ongoing Projects, Completed Projects
+  - Integrated Chart.js library for data visualization
+  - Created 4 interactive charts: Top 10 Sectors (horizontal bar), Top 10 Municipalities (doughnut), Top 10 Programs (bar), Status Distribution (pie)
+  - Responsive grid layouts for statistics and charts
+  - Hover animations on stat cards for better UX
+  - Color-coded charts using EU brand colors and complementary palette
 - **October 18, 2025**: Enhanced Dashboard Header with User Avatar Dropdown
   - Replaced plain text "Welcome User" with circular avatar showing user's initial
   - Added dropdown menu with "My Profile" and "Logout" options
