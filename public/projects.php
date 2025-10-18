@@ -46,10 +46,10 @@ $showingTo = min($offset + $itemsPerPage, $totalProjects);
                 </div>
                 <div class="actions">
                     <?php if (isAdmin()): ?>
-                        <a href="/projects-import.php" class="btn btn-secondary">Import from Excel</a>
-                        <a href="/project-add.php" class="btn btn-primary">Add New Project</a>
+                        <a href="/projects-import" class="btn btn-secondary">Import from Excel</a>
+                        <a href="/project-add" class="btn btn-primary">Add New Project</a>
                     <?php else: ?>
-                        <a href="/project-add.php" class="btn btn-primary">Add New Project</a>
+                        <a href="/project-add" class="btn btn-primary">Add New Project</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -86,10 +86,10 @@ $showingTo = min($offset + $itemsPerPage, $totalProjects);
                                     <td><?= $project['end_date'] ? date('d M Y', strtotime($project['end_date'])) : '' ?></td>
                                     <td><?= $project['eu_contribution_mne'] ? '€' . number_format($project['eu_contribution_mne'], 2) : '' ?></td>
                                     <td class="actions">
-                                        <a href="/project-view.php?id=<?= $project['id'] ?>" class="btn btn-small">View</a>
-                                        <a href="/project-edit.php?id=<?= $project['id'] ?>" class="btn btn-small">Edit</a>
+                                        <a href="/project-view?id=<?= $project['id'] ?>" class="btn btn-small">View</a>
+                                        <a href="/project-edit?id=<?= $project['id'] ?>" class="btn btn-small">Edit</a>
                                         <?php if (isAdmin()): ?>
-                                            <form method="POST" action="/project-delete.php" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this project?');">
+                                            <form method="POST" action="/project-delete" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this project?');">
                                                 <input type="hidden" name="id" value="<?= $project['id'] ?>">
                                                 <button type="submit" class="btn btn-small btn-danger">Delete</button>
                                             </form>

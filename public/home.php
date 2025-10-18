@@ -237,7 +237,7 @@
             <h1>🇪🇺 EU Projects in Montenegro</h1>
             <p>Explore EU-funded projects contributing to the development and progress of Montenegro</p>
             <div class="hero-buttons">
-                <a href="/public.php" class="hero-btn hero-btn-primary">Explore Projects</a>
+                <a href="/public" class="hero-btn hero-btn-primary">Explore Projects</a>
             </div>
         </div>
     </section>
@@ -319,7 +319,7 @@
                 helping citizens, researchers, and stakeholders understand how EU assistance is 
                 contributing to Montenegro's development.
             </p>
-            <a href="/public.php" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">
+            <a href="/public" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">
                 <span class="btn-text">View All Projects</span>
             </a>
         </div>

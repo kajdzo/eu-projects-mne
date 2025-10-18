@@ -10,6 +10,14 @@
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+    # Clean URLs - Remove .php extension
+    # Skip if already has .php extension or is a real file/directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !\.php$
+    RewriteCond %{DOCUMENT_ROOT}/public/%{REQUEST_URI}.php -f
+    RewriteRule ^(.*)$ public/$1.php [L]
+
     # Redirect all requests to public/ directory if not already there
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteCond %{REQUEST_FILENAME} !-f

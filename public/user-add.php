@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
             
             <?php if ($success): ?>
-                <div class="alert alert-success"><?= htmlspecialchars($success) ?> <a href="/users.php">Back to users</a></div>
+                <div class="alert alert-success"><?= htmlspecialchars($success) ?> <a href="/users">Back to users</a></div>
             <?php endif; ?>
             
             <form method="POST" class="user-form">
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary"><span class="btn-text">Create User</span></button>
-                    <a href="/users.php" class="btn btn-secondary">Cancel</a>
+                    <a href="/users" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

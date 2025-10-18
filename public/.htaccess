@@ -11,12 +11,13 @@
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # Allow direct access to files and directories
+    # Clean URLs - Remove .php extension
+    # If the request doesn't have .php extension and the .php file exists, use it
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    
-    # For clean URLs - route everything through router if needed
-    # RewriteRule ^(.*)$ index.php [L]
+    RewriteCond %{REQUEST_URI} !\.php$
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L]
 </IfModule>
 
 # Block directory traversal attempts to parent directories

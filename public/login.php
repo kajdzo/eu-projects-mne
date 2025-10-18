@@ -3,7 +3,7 @@ require_once __DIR__ . '/../config/init.php';
 
 // Redirect if already logged in
 if (isLoggedIn()) {
-    header('Location: /dashboard.php');
+    header('Location: /dashboard');
     exit;
 }
 
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['full_name'] = $user['full_name'];
-            header('Location: /dashboard.php');
+            header('Location: /dashboard');
             exit;
         } else {
             $error = 'Invalid email or password';

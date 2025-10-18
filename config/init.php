@@ -97,7 +97,7 @@ function getCurrentUser() {
 // Redirect to login if not authenticated
 function requireLogin() {
     if (!isLoggedIn()) {
-        header('Location: /login.php');
+        header('Location: /login');
         exit;
     }
 }
@@ -106,7 +106,7 @@ function requireLogin() {
 function requireAdmin() {
     requireLogin();
     if (!isAdmin()) {
-        header('Location: /dashboard.php');
+        header('Location: /dashboard');
         exit;
     }
 }

@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['project_link'] ?? null
         ]);
         
-        $success = 'Project added successfully! <a href="/projects.php">View all projects</a>';
+        $success = 'Project added successfully! <a href="/projects">View all projects</a>';
     } catch (Exception $e) {
         $error = 'Error adding project: ' . $e->getMessage();
     }
@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary"><span class="btn-text">Add Project</span></button>
-                    <a href="/projects.php" class="btn btn-secondary">Cancel</a>
+                    <a href="/projects" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

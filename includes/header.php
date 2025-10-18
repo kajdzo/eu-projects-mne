@@ -4,12 +4,12 @@
                 <h1 class="site-title">EU Projects in MNE</h1>
             </div>
             <nav class="main-nav">
-                <a href="/dashboard.php">Dashboard</a>
-                <a href="/projects.php">Projects</a>
-                <a href="/public.php">Public View</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/projects">Projects</a>
+                <a href="/public">Public View</a>
                 <?php if (isAdmin()): ?>
-                    <a href="/users.php">Users</a>
-                    <a href="/projects-import.php">Import</a>
+                    <a href="/users">Users</a>
+                    <a href="/projects-import">Import</a>
                 <?php endif; ?>
             </nav>
             <div class="user-dropdown">
@@ -23,13 +23,13 @@
                     </svg>
                 </button>
                 <div class="user-dropdown-menu" id="userDropdownMenu">
-                    <a href="/profile.php" class="dropdown-item">
+                    <a href="/profile" class="dropdown-item">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                             <path d="M8 8C10.21 8 12 6.21 12 4C12 1.79 10.21 0 8 0C5.79 0 4 1.79 4 4C4 6.21 5.79 8 8 8ZM8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z" fill="currentColor"/>
                         </svg>
                         My Profile
                     </a>
-                    <a href="/logout.php" class="dropdown-item logout-item">
+                    <a href="/logout" class="dropdown-item logout-item">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                             <path d="M6 14H2V2H6V0H2C0.9 0 0 0.9 0 2V14C0 15.1 0.9 16 2 16H6V14ZM11 12L14 8L11 4V7H5V9H11V12Z" fill="currentColor"/>
                         </svg>

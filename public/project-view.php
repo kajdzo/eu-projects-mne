@@ -11,7 +11,7 @@ $stmt->execute([$projectId]);
 $project = $stmt->fetch();
 
 if (!$project) {
-    header('Location: /projects.php');
+    header('Location: /projects');
     exit;
 }
 ?>
@@ -166,10 +166,10 @@ if (!$project) {
             </div>
             
             <div class="form-actions">
-                <a href="/project-edit.php?id=<?= $project['id'] ?>" class="btn btn-primary">Edit Project</a>
-                <a href="/projects.php" class="btn btn-secondary">Back to Projects</a>
+                <a href="/project-edit?id=<?= $project['id'] ?>" class="btn btn-primary">Edit Project</a>
+                <a href="/projects" class="btn btn-secondary">Back to Projects</a>
                 <?php if (isAdmin()): ?>
-                    <form method="POST" action="/project-delete.php" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this project?');">
+                    <form method="POST" action="/project-delete" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this project?');">
                         <input type="hidden" name="id" value="<?= $project['id'] ?>">
                         <button type="submit" class="btn btn-danger">Delete Project</button>
                     </form>

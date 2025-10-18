@@ -48,7 +48,7 @@ $users = $stmt->fetchAll();
             <?php endif; ?>
             
             <div class="actions-bar">
-                <a href="/user-add.php" class="btn btn-primary">Add New User</a>
+                <a href="/user-add" class="btn btn-primary">Add New User</a>
             </div>
             
             <table class="user-table">
@@ -73,7 +73,7 @@ $users = $stmt->fetchAll();
                             <td><span class="badge badge-<?= $user['is_active'] ? 'active' : 'inactive' ?>"><?= $user['is_active'] ? 'Active' : 'Inactive' ?></span></td>
                             <td><?= date('Y-m-d', strtotime($user['created_at'])) ?></td>
                             <td class="actions">
-                                <a href="/user-edit.php?id=<?= $user['id'] ?>" class="btn btn-small">Edit</a>
+                                <a href="/user-edit?id=<?= $user['id'] ?>" class="btn btn-small">Edit</a>
                                 
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="action" value="toggle_status">

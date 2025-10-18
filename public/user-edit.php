@@ -7,7 +7,7 @@ $pdo = getDbConnection();
 
 // Check permissions
 if (!isAdmin() && $userId != $_SESSION['user_id']) {
-    header('Location: /dashboard.php');
+    header('Location: /dashboard');
     exit;
 }
 
@@ -20,7 +20,7 @@ $stmt->execute([$userId]);
 $user = $stmt->fetch();
 
 if (!$user) {
-    header('Location: /dashboard.php');
+    header('Location: /dashboard');
     exit;
 }
 
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary"><span class="btn-text">Update User</span></button>
-                    <a href="<?= isAdmin() ? '/users.php' : '/dashboard.php' ?>" class="btn btn-secondary">Cancel</a>
+                    <a href="<?= isAdmin() ? '/users' : '/dashboard' ?>" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

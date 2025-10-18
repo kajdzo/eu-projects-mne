@@ -10,7 +10,7 @@ $stmt->execute([$projectId]);
 $project = $stmt->fetch();
 
 if (!$project) {
-    header('Location: /public.php');
+    header('Location: /public');
     exit;
 }
 
@@ -36,8 +36,8 @@ if ($project['end_date']) {
         <div class="container">
             <h1>🇪🇺 EU Projects in Montenegro</h1>
             <nav>
-                <a href="/home.php">Home</a>
-                <a href="/public.php">Projects</a>
+                <a href="/home">Home</a>
+                <a href="/public">Projects</a>
             </nav>
         </div>
     </header>
@@ -45,8 +45,8 @@ if ($project['end_date']) {
     <div class="container">
         <div class="main-content">
             <div class="breadcrumb">
-                <a href="/home.php">Home</a> &raquo; 
-                <a href="/public.php">Projects</a> &raquo; 
+                <a href="/home">Home</a> &raquo; 
+                <a href="/public">Projects</a> &raquo; 
                 <span>Project Details</span>
             </div>
             
@@ -194,7 +194,7 @@ if ($project['end_date']) {
             </div>
             
             <div class="form-actions">
-                <a href="/public.php" class="btn btn-primary">← Back to Projects</a>
+                <a href="/public" class="btn btn-primary">← Back to Projects</a>
             </div>
         </div>
     </div>

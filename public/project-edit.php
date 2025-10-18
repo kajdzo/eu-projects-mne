@@ -11,7 +11,7 @@ $stmt->execute([$projectId]);
 $project = $stmt->fetch();
 
 if (!$project) {
-    header('Location: /projects.php');
+    header('Location: /projects');
     exit;
 }
 
@@ -221,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary"><span class="btn-text">Update Project</span></button>
-                    <a href="/projects.php" class="btn btn-secondary">Cancel</a>
+                    <a href="/projects" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

@@ -131,11 +131,11 @@ $programStats = $programStmt->fetchAll();
             
             <div class="quick-actions">
                 <h2>Quick Actions</h2>
-                <a href="/profile.php" class="btn btn-primary">Edit My Profile</a>
-                <a href="/projects.php" class="btn btn-secondary">View All Projects</a>
+                <a href="/profile" class="btn btn-primary">Edit My Profile</a>
+                <a href="/projects" class="btn btn-secondary">View All Projects</a>
                 <?php if (isAdmin()): ?>
-                    <a href="/users.php" class="btn btn-secondary">Manage Users</a>
-                    <a href="/projects-import.php" class="btn btn-secondary">Import Projects</a>
+                    <a href="/users" class="btn btn-secondary">Manage Users</a>
+                    <a href="/projects-import" class="btn btn-secondary">Import Projects</a>
                 <?php endif; ?>
             </div>
         </div>

@@ -305,7 +305,7 @@ function parseDecimal($value) {
                 <div class="alert alert-success">
                     <?= htmlspecialchars($message) ?>
                     <br><br>
-                    <a href="/projects.php" class="btn btn-primary">View Projects</a>
+                    <a href="/projects" class="btn btn-primary">View Projects</a>
                 </div>
                 
                 <?php if (!empty($stats['sheets'])): ?>
@@ -344,7 +344,7 @@ function parseDecimal($value) {
                     
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary"><span class="btn-text">Import Projects</span></button>
-                        <a href="/projects.php" class="btn btn-secondary">Cancel</a>
+                        <a href="/projects" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
             </div>

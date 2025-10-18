@@ -236,7 +236,7 @@ if ($isAjax) {
         $isOngoing = !$project['end_date'] || strtotime($project['end_date']) >= time();
         $projectsHtml .= '<div class="project-card">';
         $projectsHtml .= '<h3>';
-        $projectsHtml .= '<a href="/public-project.php?id=' . $project['id'] . '" class="project-title-link">';
+        $projectsHtml .= '<a href="/public-project?id=' . $project['id'] . '" class="project-title-link">';
         $projectsHtml .= htmlspecialchars($project['contract_title'] ?? 'Untitled Project');
         $projectsHtml .= '</a>';
         $projectsHtml .= '<span class="status-badge ' . ($isOngoing ? 'status-ongoing' : 'status-completed') . '">';
@@ -552,7 +552,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
                 <div>EU Projects in Montenegro</div>
             </div>
             <div class="public-nav">
-                <a href="/home.php" class="btn-home">Home</a>
+                <a href="/home" class="btn-home">Home</a>
             </div>
         </div>
     </div>
@@ -676,7 +676,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
                 </div>
                 
                 <div class="filter-buttons">
-                    <a href="/public.php" class="btn btn-secondary">Reset Filters</a>
+                    <a href="/public" class="btn btn-secondary">Reset Filters</a>
                 </div>
             </form>
         </div>
@@ -694,7 +694,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
             <h2 style="color: #003399; margin-bottom: 0.5rem;">Projects (<?= $totalProjects ?>)</h2>
             <?php if ($totalProjects > 0): ?>
                 <div style="margin-bottom: 1rem;">
-                    <a href="/public-export.php?<?= http_build_query(array_filter([
+                    <a href="/public-export?<?= http_build_query(array_filter([
                         'sector' => $filterSector,
                         'municipality' => $filterMunicipality,
                         'program' => $filterProgram,
@@ -718,7 +718,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
                         ?>
                         <div class="project-card">
                             <h3>
-                                <a href="/public-project.php?id=<?= $project['id'] ?>" class="project-title-link">
+                                <a href="/public-project?id=<?= $project['id'] ?>" class="project-title-link">
                                     <?= htmlspecialchars($project['contract_title'] ?? 'Untitled Project') ?>
                                 </a>
                                 <span class="status-badge <?= $isOngoing ? 'status-ongoing' : 'status-completed' ?>">
@@ -777,7 +777,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
             params.set('get_filter_options', '1');
             
             // Fetch updated filter options
-            fetch('/public.php?' + params.toString())
+            fetch('/public?' + params.toString())
                 .then(response => response.json())
                 .then(data => {
                     // Update each filter dropdown with new options
@@ -840,11 +840,11 @@ $hasMore = ($offset + $limit) < $totalProjects;
             });
             
             // Update browser URL without reload
-            const newUrl = '/public.php' + (params.toString() ? '?' + params.toString() : '');
+            const newUrl = '/public' + (params.toString() ? '?' + params.toString() : '');
             window.history.pushState({}, '', newUrl);
             
             // Fetch filtered results
-            fetch('/public.php?' + params.toString())
+            fetch('/public?' + params.toString())
                 .then(response => response.text())
                 .then(html => {
                     // Parse the HTML response
@@ -911,7 +911,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
                 params.set('ajax', '1');
                 params.set('offset', currentOffset);
                 
-                fetch('/public.php?' + params.toString())
+                fetch('/public?' + params.toString())
                     .then(response => response.json())
                     .then(data => {
                         // Append new projects to the list

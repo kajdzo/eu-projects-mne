@@ -14,5 +14,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-header('Location: /projects.php');
+header('Location: /projects');
 exit;
