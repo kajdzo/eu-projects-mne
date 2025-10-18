@@ -72,10 +72,6 @@ if ($project['end_date']) {
                             <strong>Type of Programme:</strong>
                             <span><?= htmlspecialchars($project['type_of_programme'] ?? 'N/A') ?></span>
                         </div>
-                        <div class="detail-item">
-                            <strong>Management Mode:</strong>
-                            <span><?= htmlspecialchars($project['management_mode'] ?? 'N/A') ?></span>
-                        </div>
                     </div>
                 </section>
                 
@@ -103,10 +99,6 @@ if ($project['end_date']) {
                             <span><?= htmlspecialchars($project['contract_type'] ?? 'N/A') ?></span>
                         </div>
                         <div class="detail-item">
-                            <strong>Contract Number:</strong>
-                            <span><?= htmlspecialchars($project['contract_number'] ?? 'N/A') ?></span>
-                        </div>
-                        <div class="detail-item">
                             <strong>Commitment Year:</strong>
                             <span><?= htmlspecialchars($project['commitment_year'] ?? 'N/A') ?></span>
                         </div>
@@ -126,18 +118,12 @@ if ($project['end_date']) {
                 </section>
                 
                 <section class="detail-section">
-                    <h3>Parties & Decision</h3>
+                    <h3>Contracting Party</h3>
                     <div class="detail-grid">
                         <div class="detail-item">
                             <strong>Contracting Party:</strong>
                             <span><?= htmlspecialchars($project['contracting_party'] ?? 'N/A') ?></span>
                         </div>
-                        <?php if ($project['decision_number']): ?>
-                            <div class="detail-item">
-                                <strong>Decision Number:</strong>
-                                <span><?= htmlspecialchars($project['decision_number']) ?></span>
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </section>
                 
