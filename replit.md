@@ -18,6 +18,7 @@ None specified yet.
     - Responsive design for all public and administrative interfaces.
     - Interactive elements include dynamic cascading filters, "Load More" pagination, and spinner animations for button clicks.
     - Dashboard features overview statistics cards and interactive charts (bar, doughnut, pie) for sectors, municipalities, programs, and project status.
+    - Public dashboard displays statistics in a single horizontal row at the top for better visual hierarchy (responsive: 4 cards → 2 cards on tablet → 1 card on mobile).
     - Standardized button and link styles across the platform.
     - Enhanced dashboard header with user avatar dropdown for "My Profile" and "Logout".
 
