@@ -37,7 +37,23 @@ None specified yet.
 - **Security**: Implements password hashing, input sanitization, and prepared statements for SQL injection prevention.
 - **Performance**: "Load More" pagination for public listings and optimized filter queries with case-insensitive deduplication for improved user experience.
 
+## Recent Changes (October 18, 2025)
+- **Deployment Configuration**: Added complete deployment setup for WebSupport.sk shared hosting:
+  - Created `.htaccess` files for both root and `/public/` directory with security rules, HTTPS redirect, and PHP settings
+  - Added `.env.example` template for database configuration
+  - Updated `config/database.php` to support both `.env` file (production) and `DATABASE_URL` (Replit)
+  - Created comprehensive `DEPLOYMENT.md` with step-by-step instructions for two deployment options
+  - Implemented directory traversal protection and sensitive file blocking
+
 ## External Dependencies
 - **PostgreSQL**: The primary database for storing all application data.
 - **PhpSpreadsheet 5.1.0**: PHP library used for reading and writing spreadsheet files, specifically for Excel import and export functionalities.
 - **Chart.js**: JavaScript library used for creating interactive and customizable charts for data visualization on the dashboard.
+
+## Deployment
+- **Target Platform**: WebSupport.sk shared hosting (PHP 8.2+, PostgreSQL)
+- **Configuration Files**: 
+  - `.htaccess` (root) - For default web root setup with routing to /public/
+  - `public/.htaccess` - For web root pointing to /public/ directory (recommended)
+  - `.env` - Database credentials (not in Git, copy from `.env.example`)
+- **Security Features**: HTTPS enforcement, directory protection, file access blocking, security headers
