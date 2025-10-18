@@ -578,7 +578,6 @@ $hasMore = ($offset + $limit) < $totalProjects;
                 </div>
                 
                 <div class="filter-buttons">
-                    <button type="submit" class="btn btn-primary"><span class="btn-text">Apply Filters</span></button>
                     <a href="/public.php" class="btn btn-secondary">Reset Filters</a>
                 </div>
             </form>
@@ -658,53 +657,136 @@ $hasMore = ($offset + $limit) < $totalProjects;
     </div>
     
     <script>
-        // Add spinner to button on form submit
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const btn = this.querySelector('button[type="submit"]');
-            btn.classList.add('loading');
+        let currentOffset = <?= $limit ?>;
+        let isLoading = false;
+        
+        // Auto-submit filters on change (AJAX)
+        const filterForm = document.querySelector('form');
+        const filterSelects = filterForm.querySelectorAll('select');
+        
+        filterSelects.forEach(select => {
+            select.addEventListener('change', function() {
+                if (isLoading) return;
+                loadFilteredResults();
+            });
         });
         
-        // Load More functionality
-        <?php if ($hasMore): ?>
-        let currentOffset = <?= $limit ?>;
-        const loadMoreBtn = document.getElementById('loadMoreBtn');
-        
-        loadMoreBtn.addEventListener('click', function() {
-            // Show loading state
-            loadMoreBtn.classList.add('loading');
-            loadMoreBtn.disabled = true;
+        function loadFilteredResults() {
+            isLoading = true;
+            currentOffset = 0; // Reset pagination
             
-            // Build URL with current filters and offset
-            const params = new URLSearchParams(window.location.search);
-            params.set('ajax', '1');
-            params.set('offset', currentOffset);
+            // Build URL with current filters
+            const params = new URLSearchParams();
+            filterSelects.forEach(select => {
+                if (select.value) {
+                    params.set(select.name, select.value);
+                }
+            });
             
+            // Update browser URL without reload
+            const newUrl = '/public.php' + (params.toString() ? '?' + params.toString() : '');
+            window.history.pushState({}, '', newUrl);
+            
+            // Fetch filtered results
             fetch('/public.php?' + params.toString())
-                .then(response => response.json())
-                .then(data => {
-                    // Append new projects to the list
-                    const projectsList = document.querySelector('.projects-list');
-                    projectsList.insertAdjacentHTML('beforeend', data.html);
+                .then(response => response.text())
+                .then(html => {
+                    // Parse the HTML response
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
                     
-                    // Update offset for next load
-                    currentOffset = data.nextOffset;
+                    // Update statistics
+                    const newStats = doc.querySelector('.statistics');
+                    document.querySelector('.statistics').innerHTML = newStats.innerHTML;
                     
-                    // Remove loading state
-                    loadMoreBtn.classList.remove('loading');
-                    loadMoreBtn.disabled = false;
+                    // Update projects list
+                    const newProjectsList = doc.querySelector('.projects-list');
+                    document.querySelector('.projects-list').innerHTML = newProjectsList.innerHTML;
                     
-                    // Hide button if no more projects
-                    if (!data.hasMore) {
-                        loadMoreBtn.parentElement.remove();
+                    // Update project count in heading
+                    const newHeading = doc.querySelector('.results-section h2:nth-of-type(2)');
+                    document.querySelector('.results-section h2:nth-of-type(2)').textContent = newHeading.textContent;
+                    
+                    // Update or remove Load More button
+                    const oldLoadMoreContainer = document.querySelector('#loadMoreBtn')?.parentElement;
+                    const newLoadMoreBtn = doc.querySelector('#loadMoreBtn');
+                    
+                    if (oldLoadMoreContainer) {
+                        oldLoadMoreContainer.remove();
                     }
+                    
+                    if (newLoadMoreBtn) {
+                        const container = document.createElement('div');
+                        container.style.textAlign = 'center';
+                        container.style.marginTop = '2rem';
+                        container.innerHTML = '<button id="loadMoreBtn" class="btn btn-primary" style="min-width: 200px;"><span class="btn-text">Load More Projects</span></button>';
+                        document.querySelector('.projects-list').insertAdjacentElement('afterend', container);
+                        attachLoadMoreHandler();
+                    }
+                    
+                    currentOffset = <?= $limit ?>;
+                    isLoading = false;
                 })
                 .catch(error => {
-                    console.error('Error loading more projects:', error);
-                    loadMoreBtn.classList.remove('loading');
-                    loadMoreBtn.disabled = false;
-                    alert('Error loading more projects. Please try again.');
+                    console.error('Error loading filtered results:', error);
+                    isLoading = false;
                 });
-        });
+        }
+        
+        function attachLoadMoreHandler() {
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (!loadMoreBtn) return;
+            
+            loadMoreBtn.addEventListener('click', function() {
+                if (isLoading) return;
+                
+                // Show loading state
+                loadMoreBtn.classList.add('loading');
+                loadMoreBtn.disabled = true;
+                isLoading = true;
+                
+                // Build URL with current filters and offset
+                const params = new URLSearchParams();
+                filterSelects.forEach(select => {
+                    if (select.value) {
+                        params.set(select.name, select.value);
+                    }
+                });
+                params.set('ajax', '1');
+                params.set('offset', currentOffset);
+                
+                fetch('/public.php?' + params.toString())
+                    .then(response => response.json())
+                    .then(data => {
+                        // Append new projects to the list
+                        const projectsList = document.querySelector('.projects-list');
+                        projectsList.insertAdjacentHTML('beforeend', data.html);
+                        
+                        // Update offset for next load
+                        currentOffset = data.nextOffset;
+                        
+                        // Remove loading state
+                        loadMoreBtn.classList.remove('loading');
+                        loadMoreBtn.disabled = false;
+                        isLoading = false;
+                        
+                        // Hide button if no more projects
+                        if (!data.hasMore) {
+                            loadMoreBtn.parentElement.remove();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading more projects:', error);
+                        loadMoreBtn.classList.remove('loading');
+                        loadMoreBtn.disabled = false;
+                        isLoading = false;
+                    });
+            });
+        }
+        
+        // Initialize Load More handler if button exists
+        <?php if ($hasMore): ?>
+        attachLoadMoreHandler();
         <?php endif; ?>
     </script>
 </body>
