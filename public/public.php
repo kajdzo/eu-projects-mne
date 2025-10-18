@@ -691,9 +691,9 @@ $hasMore = ($offset + $limit) < $totalProjects;
         
         <!-- Results Section -->
         <div class="results-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h2 style="color: #003399; margin: 0;">Projects (<?= $totalProjects ?>)</h2>
-                <?php if ($totalProjects > 0): ?>
+            <h2 style="color: #003399; margin-bottom: 0.5rem;">Projects (<?= $totalProjects ?>)</h2>
+            <?php if ($totalProjects > 0): ?>
+                <div style="margin-bottom: 1rem;">
                     <a href="/public-export.php?<?= http_build_query(array_filter([
                         'sector' => $filterSector,
                         'municipality' => $filterMunicipality,
@@ -706,8 +706,8 @@ $hasMore = ($offset + $limit) < $totalProjects;
                     ])) ?>" class="btn btn-secondary" style="background-color: #28a745; color: white;">
                         <span class="btn-text">📥 Export to Excel</span>
                     </a>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php endif; ?>
             <div class="projects-list">
                 <?php if (empty($projects)): ?>
                     <p style="color: #666; text-align: center; padding: 2rem;">No projects found matching your filters.</p>
