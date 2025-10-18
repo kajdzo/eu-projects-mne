@@ -662,7 +662,23 @@ $hasMore = ($offset + $limit) < $totalProjects;
                 </div>
             </div>
             
-            <h2 style="color: #003399; margin-bottom: 1rem;">Projects (<?= $totalProjects ?>)</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: #003399; margin: 0;">Projects (<?= $totalProjects ?>)</h2>
+                <?php if ($totalProjects > 0): ?>
+                    <a href="/public-export.php?<?= http_build_query(array_filter([
+                        'sector' => $filterSector,
+                        'municipality' => $filterMunicipality,
+                        'program' => $filterProgram,
+                        'type_of_programme' => $filterTypeOfProgramme,
+                        'start_year' => $filterStartYear,
+                        'end_year' => $filterEndYear,
+                        'beneficiary' => $filterBeneficiary,
+                        'status' => $filterStatus
+                    ])) ?>" class="btn btn-secondary" style="background-color: #28a745; color: white;">
+                        <span class="btn-text">📥 Export to Excel</span>
+                    </a>
+                <?php endif; ?>
+            </div>
             <div class="projects-list">
                 <?php if (empty($projects)): ?>
                     <p style="color: #666; text-align: center; padding: 2rem;">No projects found matching your filters.</p>
@@ -903,12 +919,12 @@ $hasMore = ($offset + $limit) < $totalProjects;
     
     <footer class="public-footer" style="padding: 2rem 0; margin-top: 3rem; text-align: center; border-top: 1px solid #e5e7eb;">
         <div class="container">
-            <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #666;">
+            <p style="font-size: 0.9rem; margin-bottom: 1rem;">
                 This website was created and maintained with the financial support of the European Union. 
                 Its contents are the sole responsibility of the Europe House and do not necessarily reflect 
                 the views of the European Union.
             </p>
-            <p style="color: #999; font-size: 0.85rem;">&copy; <?= date('Y') ?> EU Projects in Montenegro. All rights reserved.</p>
+            <p style="font-size: 0.85rem;">&copy; <?= date('Y') ?> EU Projects in Montenegro. All rights reserved.</p>
         </div>
     </footer>
 </body>
