@@ -38,7 +38,7 @@ $showingTo = min($offset + $itemsPerPage, $totalProjects);
     
     <div class="container">
         <div class="main-content">
-            <h1>EU Projects in Montenegro</h1>
+            <h1>🇪🇺 EU Projects in Montenegro</h1>
             
             <div class="actions-bar">
                 <div class="stats">
