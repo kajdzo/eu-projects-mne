@@ -13,78 +13,127 @@ $filterEndYear = isset($_GET['end_year']) ? trim($_GET['end_year']) : '';
 $filterBeneficiary = isset($_GET['beneficiary']) ? trim($_GET['beneficiary']) : '';
 $filterStatus = isset($_GET['status']) ? trim($_GET['status']) : '';
 
-// Get distinct values for filters (case-insensitive)
-$sectors = [];
-$stmt = $pdo->query("
-    SELECT MIN(TRIM(sector)) as sector 
-    FROM (
-        SELECT sector_1 as sector FROM projects WHERE sector_1 IS NOT NULL AND TRIM(sector_1) != '' 
-        UNION 
-        SELECT sector_2 as sector FROM projects WHERE sector_2 IS NOT NULL AND TRIM(sector_2) != ''
-    ) s
-    GROUP BY UPPER(TRIM(sector))
-    ORDER BY UPPER(TRIM(sector))
-");
-while ($row = $stmt->fetch()) {
-    if (!empty($row['sector'])) {
-        $sectors[] = $row['sector'];
+// Function to get filter options based on current selections
+function getFilterOptions($pdo, $excludeFilter = null) {
+    global $filterSector, $filterMunicipality, $filterProgram, $filterTypeOfProgramme, $filterStartYear, $filterEndYear, $filterBeneficiary, $filterStatus;
+    
+    // Build WHERE clause based on current filters (excluding the one we're updating)
+    $where = [];
+    $params = [];
+    
+    if (!empty($filterSector) && $excludeFilter !== 'sector') {
+        $where[] = "(UPPER(TRIM(sector_1)) = UPPER(?) OR UPPER(TRIM(sector_2)) = UPPER(?))";
+        $params[] = $filterSector;
+        $params[] = $filterSector;
     }
+    
+    if (!empty($filterMunicipality) && $excludeFilter !== 'municipality') {
+        $where[] = "UPPER(TRIM(municipality)) = UPPER(?)";
+        $params[] = $filterMunicipality;
+    }
+    
+    if (!empty($filterProgram) && $excludeFilter !== 'program') {
+        $where[] = "UPPER(TRIM(programme)) = UPPER(?)";
+        $params[] = $filterProgram;
+    }
+    
+    if (!empty($filterTypeOfProgramme) && $excludeFilter !== 'type_of_programme') {
+        $where[] = "UPPER(TRIM(type_of_programme)) = UPPER(?)";
+        $params[] = $filterTypeOfProgramme;
+    }
+    
+    if (!empty($filterStartYear) && $excludeFilter !== 'start_year') {
+        $where[] = "EXTRACT(YEAR FROM start_date) = ?";
+        $params[] = $filterStartYear;
+    }
+    
+    if (!empty($filterEndYear) && $excludeFilter !== 'end_year') {
+        $where[] = "EXTRACT(YEAR FROM end_date) = ?";
+        $params[] = $filterEndYear;
+    }
+    
+    if (!empty($filterBeneficiary) && $excludeFilter !== 'beneficiary') {
+        $where[] = "UPPER(TRIM(contracting_party)) = UPPER(?)";
+        $params[] = $filterBeneficiary;
+    }
+    
+    if ($filterStatus === 'ongoing' && $excludeFilter !== 'status') {
+        $where[] = "(end_date IS NULL OR end_date >= CURRENT_DATE)";
+    } elseif ($filterStatus === 'completed' && $excludeFilter !== 'status') {
+        $where[] = "end_date < CURRENT_DATE";
+    }
+    
+    $whereClause = !empty($where) ? "WHERE " . implode(' AND ', $where) : "";
+    
+    // Get sectors
+    $sectorSql = "SELECT MIN(TRIM(sector)) as sector 
+        FROM (
+            SELECT sector_1 as sector FROM projects $whereClause " . (!empty($where) ? "AND" : "WHERE") . " sector_1 IS NOT NULL AND TRIM(sector_1) != '' 
+            UNION 
+            SELECT sector_2 as sector FROM projects $whereClause " . (!empty($where) ? "AND" : "WHERE") . " sector_2 IS NOT NULL AND TRIM(sector_2) != ''
+        ) s
+        GROUP BY UPPER(TRIM(sector))
+        ORDER BY UPPER(TRIM(sector))";
+    $stmt = $pdo->prepare($sectorSql);
+    $stmt->execute(array_merge($params, $params));
+    $sectors = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    
+    // Get municipalities
+    $municipalitySql = "SELECT MIN(TRIM(municipality)) as municipality FROM projects $whereClause " . (!empty($where) ? "AND" : "WHERE") . " municipality IS NOT NULL AND TRIM(municipality) != '' GROUP BY UPPER(TRIM(municipality)) ORDER BY UPPER(TRIM(municipality))";
+    $stmt = $pdo->prepare($municipalitySql);
+    $stmt->execute($params);
+    $municipalities = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    
+    // Get programs
+    $programSql = "SELECT MIN(TRIM(programme)) as programme FROM projects $whereClause " . (!empty($where) ? "AND" : "WHERE") . " programme IS NOT NULL AND TRIM(programme) != '' GROUP BY UPPER(TRIM(programme)) ORDER BY UPPER(TRIM(programme))";
+    $stmt = $pdo->prepare($programSql);
+    $stmt->execute($params);
+    $programs = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    
+    // Get type of programmes
+    $typeSql = "SELECT MIN(TRIM(type_of_programme)) as type_of_programme FROM projects $whereClause " . (!empty($where) ? "AND" : "WHERE") . " type_of_programme IS NOT NULL AND TRIM(type_of_programme) != '' GROUP BY UPPER(TRIM(type_of_programme)) ORDER BY UPPER(TRIM(type_of_programme))";
+    $stmt = $pdo->prepare($typeSql);
+    $stmt->execute($params);
+    $typeOfProgrammes = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    
+    // Get beneficiaries
+    $beneficiarySql = "SELECT MIN(TRIM(contracting_party)) as contracting_party FROM projects $whereClause " . (!empty($where) ? "AND" : "WHERE") . " contracting_party IS NOT NULL AND TRIM(contracting_party) != '' GROUP BY UPPER(TRIM(contracting_party)) ORDER BY UPPER(TRIM(contracting_party))";
+    $stmt = $pdo->prepare($beneficiarySql);
+    $stmt->execute($params);
+    $beneficiaries = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    
+    // Get years
+    $yearSql = "SELECT DISTINCT EXTRACT(YEAR FROM start_date)::int as year FROM projects $whereClause " . (!empty($where) ? "AND" : "WHERE") . " start_date IS NOT NULL UNION SELECT DISTINCT EXTRACT(YEAR FROM end_date)::int as year FROM projects $whereClause " . (!empty($where) ? "AND" : "WHERE") . " end_date IS NOT NULL ORDER BY 1";
+    $stmt = $pdo->prepare($yearSql);
+    $stmt->execute(array_merge($params, $params));
+    $years = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    
+    return [
+        'sectors' => $sectors,
+        'municipalities' => $municipalities,
+        'programs' => $programs,
+        'typeOfProgrammes' => $typeOfProgrammes,
+        'beneficiaries' => $beneficiaries,
+        'years' => $years
+    ];
 }
 
-$municipalities = [];
-$stmt = $pdo->query("
-    SELECT MIN(TRIM(municipality)) as municipality 
-    FROM projects 
-    WHERE municipality IS NOT NULL AND TRIM(municipality) != '' 
-    GROUP BY UPPER(TRIM(municipality))
-    ORDER BY UPPER(TRIM(municipality))
-");
-while ($row = $stmt->fetch()) {
-    $municipalities[] = $row['municipality'];
+// Handle AJAX request for filter options
+if (isset($_GET['get_filter_options'])) {
+    header('Content-Type: application/json');
+    $options = getFilterOptions($pdo);
+    echo json_encode($options);
+    exit;
 }
 
-$programs = [];
-$stmt = $pdo->query("
-    SELECT MIN(TRIM(programme)) as programme 
-    FROM projects 
-    WHERE programme IS NOT NULL AND TRIM(programme) != '' 
-    GROUP BY UPPER(TRIM(programme))
-    ORDER BY UPPER(TRIM(programme))
-");
-while ($row = $stmt->fetch()) {
-    $programs[] = $row['programme'];
-}
-
-$typeOfProgrammes = [];
-$stmt = $pdo->query("
-    SELECT MIN(TRIM(type_of_programme)) as type_of_programme 
-    FROM projects 
-    WHERE type_of_programme IS NOT NULL AND TRIM(type_of_programme) != '' 
-    GROUP BY UPPER(TRIM(type_of_programme))
-    ORDER BY UPPER(TRIM(type_of_programme))
-");
-while ($row = $stmt->fetch()) {
-    $typeOfProgrammes[] = $row['type_of_programme'];
-}
-
-$beneficiaries = [];
-$stmt = $pdo->query("
-    SELECT MIN(TRIM(contracting_party)) as contracting_party 
-    FROM projects 
-    WHERE contracting_party IS NOT NULL AND TRIM(contracting_party) != '' 
-    GROUP BY UPPER(TRIM(contracting_party))
-    ORDER BY UPPER(TRIM(contracting_party))
-");
-while ($row = $stmt->fetch()) {
-    $beneficiaries[] = $row['contracting_party'];
-}
-
-// Get distinct years from start_date and end_date
-$years = [];
-$stmt = $pdo->query("SELECT DISTINCT EXTRACT(YEAR FROM start_date)::int as year FROM projects WHERE start_date IS NOT NULL UNION SELECT DISTINCT EXTRACT(YEAR FROM end_date)::int as year FROM projects WHERE end_date IS NOT NULL ORDER BY 1");
-while ($row = $stmt->fetch()) {
-    $years[] = $row['year'];
-}
+// Get distinct values for filters (case-insensitive) based on current selections
+$filterOptions = getFilterOptions($pdo);
+$sectors = $filterOptions['sectors'];
+$municipalities = $filterOptions['municipalities'];
+$programs = $filterOptions['programs'];
+$typeOfProgrammes = $filterOptions['typeOfProgrammes'];
+$beneficiaries = $filterOptions['beneficiaries'];
+$years = $filterOptions['years'];
 
 // Build WHERE clause based on filters (case-insensitive)
 $where = [];
@@ -667,9 +716,71 @@ $hasMore = ($offset + $limit) < $totalProjects;
         filterSelects.forEach(select => {
             select.addEventListener('change', function() {
                 if (isLoading) return;
+                updateFilterOptions();
                 loadFilteredResults();
             });
         });
+        
+        function updateFilterOptions() {
+            // Build URL with current filters
+            const params = new URLSearchParams();
+            filterSelects.forEach(select => {
+                if (select.value) {
+                    params.set(select.name, select.value);
+                }
+            });
+            params.set('get_filter_options', '1');
+            
+            // Fetch updated filter options
+            fetch('/public.php?' + params.toString())
+                .then(response => response.json())
+                .then(data => {
+                    // Update each filter dropdown with new options
+                    updateDropdown('sector', data.sectors, filterSelects);
+                    updateDropdown('municipality', data.municipalities, filterSelects);
+                    updateDropdown('program', data.programs, filterSelects);
+                    updateDropdown('type_of_programme', data.typeOfProgrammes, filterSelects);
+                    updateDropdown('start_year', data.years, filterSelects);
+                    updateDropdown('end_year', data.years, filterSelects);
+                    updateDropdown('beneficiary', data.beneficiaries, filterSelects);
+                })
+                .catch(error => {
+                    console.error('Error updating filter options:', error);
+                });
+        }
+        
+        function updateDropdown(name, options, allSelects) {
+            const select = Array.from(allSelects).find(s => s.name === name);
+            if (!select) return;
+            
+            const currentValue = select.value;
+            const firstOptionText = select.options[0].text; // "All Sectors", "All Municipalities", etc.
+            
+            // Clear and rebuild options
+            select.innerHTML = '';
+            
+            // Add default "All..." option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = firstOptionText;
+            select.appendChild(defaultOption);
+            
+            // Add available options
+            options.forEach(optionValue => {
+                const option = document.createElement('option');
+                option.value = optionValue;
+                option.textContent = optionValue;
+                if (optionValue === currentValue) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+            
+            // If current value is not in the new options, reset to default
+            if (currentValue && !options.includes(currentValue)) {
+                select.value = '';
+            }
+        }
         
         function loadFilteredResults() {
             isLoading = true;
