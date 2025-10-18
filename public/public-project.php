@@ -30,17 +30,85 @@ if ($project['end_date']) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($project['contract_title'] ?? 'Project Details') ?> - EU Projects in MNE</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .public-header {
+            background-color: #003399;
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .public-header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-placeholder {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-box {
+            width: 60px;
+            height: 60px;
+            background-color: #FFCC00;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .public-nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .public-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+            line-height: 1;
+            text-align: center;
+        }
+        
+        .public-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .public-nav .btn-home {
+            background-color: #FFCC00;
+            color: #003399;
+            font-weight: 600;
+        }
+        
+        .public-nav .btn-home:hover {
+            background-color: #e6b800;
+        }
+    </style>
 </head>
 <body>
-    <header class="public-header">
-        <div class="container">
-            <h1>🇪🇺 EU Projects in Montenegro</h1>
-            <nav>
-                <a href="/home.php">Home</a>
-                <a href="/public.php">Projects Dashboard</a>
-            </nav>
+    <div class="public-header">
+        <div class="public-header-container">
+            <div class="logo-placeholder">
+                <div class="logo-box">🇪🇺</div>
+                <div>EU Projects in Montenegro</div>
+            </div>
+            <div class="public-nav">
+                <a href="/home.php" class="btn-home">Home</a>
+            </div>
         </div>
-    </header>
+    </div>
     
     <div class="container">
         <div class="main-content">
