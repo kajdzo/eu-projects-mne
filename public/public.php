@@ -7,6 +7,7 @@ $pdo = getDbConnection();
 $filterSector = isset($_GET['sector']) ? trim($_GET['sector']) : '';
 $filterMunicipality = isset($_GET['municipality']) ? trim($_GET['municipality']) : '';
 $filterProgram = isset($_GET['program']) ? trim($_GET['program']) : '';
+$filterTypeOfProgramme = isset($_GET['type_of_programme']) ? trim($_GET['type_of_programme']) : '';
 $filterStartYear = isset($_GET['start_year']) ? trim($_GET['start_year']) : '';
 $filterEndYear = isset($_GET['end_year']) ? trim($_GET['end_year']) : '';
 $filterBeneficiary = isset($_GET['beneficiary']) ? trim($_GET['beneficiary']) : '';
@@ -54,6 +55,18 @@ while ($row = $stmt->fetch()) {
     $programs[] = $row['programme'];
 }
 
+$typeOfProgrammes = [];
+$stmt = $pdo->query("
+    SELECT MIN(TRIM(type_of_programme)) as type_of_programme 
+    FROM projects 
+    WHERE type_of_programme IS NOT NULL AND TRIM(type_of_programme) != '' 
+    GROUP BY UPPER(TRIM(type_of_programme))
+    ORDER BY UPPER(TRIM(type_of_programme))
+");
+while ($row = $stmt->fetch()) {
+    $typeOfProgrammes[] = $row['type_of_programme'];
+}
+
 $beneficiaries = [];
 $stmt = $pdo->query("
     SELECT MIN(TRIM(contracting_party)) as contracting_party 
@@ -91,6 +104,11 @@ if (!empty($filterMunicipality)) {
 if (!empty($filterProgram)) {
     $where[] = "UPPER(TRIM(programme)) = UPPER(?)";
     $params[] = $filterProgram;
+}
+
+if (!empty($filterTypeOfProgramme)) {
+    $where[] = "UPPER(TRIM(type_of_programme)) = UPPER(?)";
+    $params[] = $filterTypeOfProgramme;
 }
 
 if (!empty($filterStartYear)) {
@@ -497,6 +515,18 @@ $hasMore = ($offset + $limit) < $totalProjects;
                         <?php foreach ($programs as $program): ?>
                             <option value="<?= htmlspecialchars($program) ?>" <?= $filterProgram === $program ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($program) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="type_of_programme">Type of Programme</label>
+                    <select name="type_of_programme" id="type_of_programme">
+                        <option value="">All Types</option>
+                        <?php foreach ($typeOfProgrammes as $typeOfProgramme): ?>
+                            <option value="<?= htmlspecialchars($typeOfProgramme) ?>" <?= $filterTypeOfProgramme === $typeOfProgramme ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($typeOfProgramme) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
