@@ -4,6 +4,20 @@
 A PHP-based dashboard for managing EU Projects in Montenegro with user management and role-based access control (RBAC). The system supports two user roles: Administrator and Editor.
 
 ## Recent Changes
+- **October 18, 2025**: Added EU Disclaimer to Public Pages
+  - Added disclaimer footer to all public pages (home.php, public.php, public-project.php)
+  - Disclaimer text: "This website was created and maintained with the financial support of the European Union. Its contents are the sole responsibility of the Europe House and do not necessarily reflect the views of the European Union."
+  - Footer styling consistent across all public pages
+- **October 18, 2025**: Hidden Sensitive Fields from Public View
+  - Removed Management Mode, Contract Number, and Decision Number from public project details page
+  - These fields remain visible and editable in admin area (project-view.php, project-edit.php, project-add.php)
+  - Cleaner public-facing project information while maintaining full admin control
+- **October 18, 2025**: Implemented Dynamic Cascading Filters on Public Dashboard
+  - Filter dropdowns now update dynamically to show only relevant options based on current selections
+  - AJAX-powered real-time filter option updates without page refresh
+  - Users can only select filter combinations that have matching data
+  - Improved user experience by preventing empty result sets
+  - Created getFilterOptions() function for dynamic filter queries
 - **October 18, 2025**: Added Comprehensive Dashboard Statistics and Charts
   - Added 4 overview statistics cards: Total Projects, Total EU Funding, Ongoing Projects, Completed Projects
   - Integrated Chart.js library for data visualization

@@ -900,5 +900,16 @@ $hasMore = ($offset + $limit) < $totalProjects;
         attachLoadMoreHandler();
         <?php endif; ?>
     </script>
+    
+    <footer class="public-footer" style="background-color: #f9fafb; padding: 2rem 0; margin-top: 3rem; text-align: center; border-top: 1px solid #e5e7eb;">
+        <div class="container">
+            <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #666;">
+                This website was created and maintained with the financial support of the European Union. 
+                Its contents are the sole responsibility of the Europe House and do not necessarily reflect 
+                the views of the European Union.
+            </p>
+            <p style="color: #999; font-size: 0.85rem;">&copy; <?= date('Y') ?> EU Projects in Montenegro. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

@@ -327,6 +327,13 @@
     
     <!-- Footer -->
     <footer class="home-footer">
+        <div class="footer-disclaimer">
+            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">
+                This website was created and maintained with the financial support of the European Union. 
+                Its contents are the sole responsibility of the Europe House and do not necessarily reflect 
+                the views of the European Union.
+            </p>
+        </div>
         <p>&copy; 2025 EU Projects in Montenegro.</p>
     </footer>
 </body>
