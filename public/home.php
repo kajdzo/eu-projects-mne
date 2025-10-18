@@ -238,7 +238,6 @@
             <p>Explore EU-funded projects contributing to the development and progress of Montenegro</p>
             <div class="hero-buttons">
                 <a href="/public.php" class="hero-btn hero-btn-primary">Explore Projects</a>
-                <a href="/login.php" class="hero-btn hero-btn-secondary">Admin Login</a>
             </div>
         </div>
     </section>
@@ -328,7 +327,7 @@
     
     <!-- Footer -->
     <footer class="home-footer">
-        <p>&copy; 2025 EU Projects in Montenegro. <a href="/login.php">Admin Access</a></p>
+        <p>&copy; 2025 EU Projects in Montenegro.</p>
     </footer>
 </body>
 </html>
