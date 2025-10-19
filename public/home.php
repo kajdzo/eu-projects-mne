@@ -327,6 +327,7 @@
     
     <!-- Footer -->
     <footer class="home-footer">
+        <img src="/eu-logo-white.png" alt="Funded by the European Union" style="height: 80px; width: auto; margin-bottom: 1.5rem;">
         <div class="footer-disclaimer">
             <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">
                 This website was created and maintained with the financial support of the European Union. 

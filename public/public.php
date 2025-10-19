@@ -1007,6 +1007,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
     
     <footer class="public-footer" style="padding: 2rem 0; margin-top: 3rem; text-align: center; border-top: 1px solid #e5e7eb;">
         <div class="container">
+            <img src="/eu-logo-blue.png" alt="Funded by the European Union" style="height: 80px; width: auto; margin-bottom: 1.5rem;">
             <p style="font-size: 0.9rem; margin-bottom: 1rem;">
                 This website was created and maintained with the financial support of the European Union. 
                 Its contents are the sole responsibility of the Europe House and do not necessarily reflect 
