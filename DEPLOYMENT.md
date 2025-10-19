@@ -13,10 +13,18 @@ This guide will help you deploy the EU Projects in MNE dashboard to WebSupport.s
 
 This application uses **clean URLs** (e.g., `/home`, `/public`, `/login` instead of `/home.php`, `/public.php`, `/login.php`) for better user experience.
 
-- **Production (WebSupport.sk)**: Clean URLs work perfectly via Apache `.htaccess` mod_rewrite
-- **Development (Replit)**: Clean URLs do NOT work with PHP built-in server - use `.php` extensions (e.g., `/home.php`)
+### Production (WebSupport.sk)
+- ✅ Clean URLs work perfectly via Apache `.htaccess` mod_rewrite
+- ✅ All internal links use clean URLs and work seamlessly
+- ✅ Users see nice URLs without `.php` extensions
 
-**All internal links in the application use clean URLs**, so they will work correctly in production but may not work in Replit development environment.
+### Development (Replit)
+- ⚠️ Clean URLs do NOT work with PHP built-in server
+- ✅ Use `.php` extensions when typing URLs in browser (e.g., `/home.php`, `/public.php`, `/login.php`)
+- ⚠️ Once loaded, internal navigation links won't work (they use clean URLs)
+- 💡 This is only a development inconvenience - production works perfectly
+
+**Bottom line**: The application is designed for production use with Apache. Clean URLs work perfectly when deployed to WebSupport.sk.
 
 ## Step-by-Step Deployment
 

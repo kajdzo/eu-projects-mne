@@ -39,11 +39,11 @@ None specified yet.
 
 ## Recent Changes (October 19, 2025)
 - **Clean URLs Implementation**: 
-  - Updated all internal application links to use clean URLs (without .php extension)
-  - `.htaccess` files configured for Apache mod_rewrite in production
-  - Clean URLs work perfectly on websupport.sk (production) but NOT in Replit development
-  - Router.php simplified - use .php extensions when testing in Replit (e.g., /home.php instead of /home)
-  - Documentation added to DEPLOYMENT.md explaining clean URL behavior
+  - All internal application links use clean URLs (without .php extension) for production
+  - `.htaccess` files configured for Apache mod_rewrite - clean URLs work perfectly in production
+  - Simple router.php for Replit development - developers must use .php extensions (e.g., /home.php)
+  - This is a development-only limitation; production on websupport.sk works perfectly with clean URLs
+  - Comprehensive documentation added to DEPLOYMENT.md explaining the development vs production difference
 
 ## Previous Changes (October 18, 2025)
 - **Deployment Configuration**: Added complete deployment setup for WebSupport.sk shared hosting:
