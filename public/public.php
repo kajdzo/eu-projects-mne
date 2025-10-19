@@ -1064,23 +1064,37 @@ $hasMore = ($offset + $limit) < $totalProjects;
                     // Only remove active class if this municipality isn't selected in filter
                     const currentFilter = document.getElementById('municipality').value;
                     const municipalityName = d3.select(this).attr('data-name');
-                    if (currentFilter !== municipalityName) {
+                    if (currentFilter.toLowerCase() !== municipalityName.toLowerCase()) {
                         d3.select(this).classed('active', false);
                     }
                 })
                 .on('click', function(event, d) {
                     const municipalityName = d.properties.name;
                     
-                    // Update the municipality filter dropdown
+                    // Find matching dropdown option case-insensitively
                     const municipalitySelect = document.getElementById('municipality');
-                    municipalitySelect.value = municipalityName;
+                    const options = municipalitySelect.options;
+                    let matchedValue = null;
                     
-                    // Trigger the filter change event
-                    municipalitySelect.dispatchEvent(new Event('change'));
+                    for (let i = 0; i < options.length; i++) {
+                        if (options[i].value && 
+                            options[i].value.toLowerCase() === municipalityName.toLowerCase()) {
+                            matchedValue = options[i].value;
+                            break;
+                        }
+                    }
                     
-                    // Highlight the selected municipality
-                    mapGroup.selectAll('.municipality').classed('active', false);
-                    d3.select(this).classed('active', true);
+                    // Update the municipality filter dropdown with matched value
+                    if (matchedValue) {
+                        municipalitySelect.value = matchedValue;
+                        
+                        // Trigger the filter change event
+                        municipalitySelect.dispatchEvent(new Event('change'));
+                        
+                        // Highlight the selected municipality
+                        mapGroup.selectAll('.municipality').classed('active', false);
+                        d3.select(this).classed('active', true);
+                    }
                 });
             
             // Add municipality labels
@@ -1100,7 +1114,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
             if (currentFilter) {
                 mapGroup.selectAll('.municipality')
                     .filter(function(d) {
-                        return d.properties.name === currentFilter;
+                        return d.properties.name.toLowerCase() === currentFilter.toLowerCase();
                     })
                     .classed('active', true);
             }
