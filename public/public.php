@@ -542,7 +542,64 @@ $hasMore = ($offset + $limit) < $totalProjects;
                 grid-template-columns: 1fr;
             }
         }
+        
+        /* Map Styles */
+        .map-section {
+            position: relative;
+        }
+        
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .municipality {
+            fill: #3498db;
+            stroke: #fff;
+            stroke-width: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .municipality:hover {
+            fill: #2980b9;
+            stroke-width: 2px;
+        }
+        
+        .municipality.active {
+            fill: #e74c3c;
+            stroke-width: 2px;
+        }
+        
+        .map-tooltip {
+            position: absolute;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            z-index: 10;
+            font-weight: 500;
+        }
+        
+        .municipality-label {
+            font-size: 9px;
+            font-weight: 600;
+            fill: white;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            font-family: Arial, sans-serif;
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.0/d3.min.js"></script>
 </head>
 <body>
     <div class="public-header">
@@ -683,9 +740,8 @@ $hasMore = ($offset + $limit) < $totalProjects;
         
         <!-- Map Section -->
         <div class="map-section">
-            <div class="map-placeholder">
-                <h3>📍 Interactive Map</h3>
-                <p>Map will be integrated here with geodata</p>
+            <div class="map-container" id="montenegro-map">
+                <div class="map-tooltip"></div>
             </div>
         </div>
         
@@ -956,5 +1012,103 @@ $hasMore = ($offset + $limit) < $totalProjects;
             <p style="font-size: 0.85rem;">&copy; <?= date('Y') ?> EU Projects in Montenegro. All rights reserved.</p>
         </div>
     </footer>
+    
+    <script>
+    // Initialize Montenegro Interactive Map
+    (function() {
+        const mapContainer = document.getElementById('montenegro-map');
+        if (!mapContainer) return;
+        
+        const width = mapContainer.clientWidth;
+        const height = mapContainer.clientHeight;
+        
+        // Create SVG
+        const svg = d3.select('#montenegro-map')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+        
+        const mapGroup = svg.append('g');
+        const tooltip = d3.select('.map-tooltip');
+        
+        // Setup projection for Montenegro
+        const projection = d3.geoMercator()
+            .center([19.25, 42.75])
+            .scale(12000)
+            .translate([width / 2, height / 2]);
+        
+        const path = d3.geoPath().projection(projection);
+        
+        // Load and render the map
+        d3.json('/montenegro.json').then(function(geojson) {
+            // Draw municipalities
+            mapGroup.selectAll('.municipality')
+                .data(geojson.features)
+                .enter()
+                .append('path')
+                .attr('class', 'municipality')
+                .attr('d', path)
+                .attr('data-name', d => d.properties.name)
+                .on('mouseover', function(event, d) {
+                    tooltip
+                        .style('opacity', 1)
+                        .html(d.properties.name)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 28) + 'px');
+                    
+                    d3.select(this).classed('active', true);
+                })
+                .on('mouseout', function() {
+                    tooltip.style('opacity', 0);
+                    
+                    // Only remove active class if this municipality isn't selected in filter
+                    const currentFilter = document.getElementById('municipality').value;
+                    const municipalityName = d3.select(this).attr('data-name');
+                    if (currentFilter !== municipalityName) {
+                        d3.select(this).classed('active', false);
+                    }
+                })
+                .on('click', function(event, d) {
+                    const municipalityName = d.properties.name;
+                    
+                    // Update the municipality filter dropdown
+                    const municipalitySelect = document.getElementById('municipality');
+                    municipalitySelect.value = municipalityName;
+                    
+                    // Trigger the filter change event
+                    municipalitySelect.dispatchEvent(new Event('change'));
+                    
+                    // Highlight the selected municipality
+                    mapGroup.selectAll('.municipality').classed('active', false);
+                    d3.select(this).classed('active', true);
+                });
+            
+            // Add municipality labels
+            mapGroup.selectAll('.municipality-label')
+                .data(geojson.features)
+                .enter()
+                .append('text')
+                .attr('class', 'municipality-label')
+                .attr('transform', d => {
+                    const centroid = path.centroid(d);
+                    return `translate(${centroid[0]}, ${centroid[1]})`;
+                })
+                .text(d => d.properties.name);
+            
+            // Highlight municipality if filter is active
+            const currentFilter = '<?= $filterMunicipality ?>';
+            if (currentFilter) {
+                mapGroup.selectAll('.municipality')
+                    .filter(function(d) {
+                        return d.properties.name === currentFilter;
+                    })
+                    .classed('active', true);
+            }
+        }).catch(function(error) {
+            console.error('Error loading map data:', error);
+            mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">Map data could not be loaded</div>';
+        });
+    })();
+    </script>
 </body>
 </html>
