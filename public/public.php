@@ -1074,30 +1074,98 @@ $hasMore = ($offset + $limit) < $totalProjects;
                 .on('click', function(event, d) {
                     const municipalityName = d.properties.name;
                     
-                    // Find matching dropdown option case-insensitively
-                    const municipalitySelect = document.getElementById('municipality');
-                    const options = municipalitySelect.options;
-                    let matchedValue = null;
+                    if (isLoading) return;
                     
-                    for (let i = 0; i < options.length; i++) {
-                        if (options[i].value && 
-                            options[i].value.toLowerCase() === municipalityName.toLowerCase()) {
-                            matchedValue = options[i].value;
-                            break;
-                        }
-                    }
+                    // Reset all filter dropdowns to their default "All..." values
+                    filterSelects.forEach(select => {
+                        select.value = '';
+                    });
                     
-                    // Update the municipality filter dropdown with matched value
-                    if (matchedValue) {
-                        municipalitySelect.value = matchedValue;
-                        
-                        // Trigger the filter change event
-                        municipalitySelect.dispatchEvent(new Event('change'));
-                        
-                        // Highlight the selected municipality
-                        mapGroup.selectAll('.municipality').classed('active', false);
-                        d3.select(this).classed('active', true);
-                    }
+                    // Directly apply municipality filter via AJAX (bypass dropdown matching)
+                    const params = new URLSearchParams();
+                    params.set('municipality', municipalityName);
+                    
+                    // Update browser URL
+                    const newUrl = '/public?' + params.toString();
+                    window.history.pushState({}, '', newUrl);
+                    
+                    // Set loading state
+                    isLoading = true;
+                    
+                    // Fetch filtered results directly
+                    fetch('/public?' + params.toString())
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            
+                            // Update stats cards
+                            const statsCards = doc.querySelectorAll('.stats-card');
+                            document.querySelectorAll('.stats-card').forEach((card, index) => {
+                                if (statsCards[index]) {
+                                    card.innerHTML = statsCards[index].innerHTML;
+                                }
+                            });
+                            
+                            // Update projects list
+                            const newProjectsList = doc.querySelector('.projects-list');
+                            document.querySelector('.projects-list').innerHTML = newProjectsList.innerHTML;
+                            
+                            // Update project count in heading
+                            const newHeading = doc.querySelector('.results-section h2');
+                            const currentHeading = document.querySelector('.results-section h2');
+                            if (newHeading && currentHeading) {
+                                currentHeading.textContent = newHeading.textContent;
+                            }
+                            
+                            // Update or remove Load More button
+                            const oldLoadMoreContainer = document.querySelector('#loadMoreBtn')?.parentElement;
+                            const newLoadMoreBtn = doc.querySelector('#loadMoreBtn');
+                            
+                            if (newLoadMoreBtn && oldLoadMoreContainer) {
+                                const newContainer = newLoadMoreBtn.parentElement;
+                                oldLoadMoreContainer.innerHTML = newContainer.innerHTML;
+                                attachLoadMoreHandler();
+                            } else if (oldLoadMoreContainer) {
+                                oldLoadMoreContainer.remove();
+                            }
+                            
+                            // Update filter dropdowns with new options
+                            params.set('get_filter_options', '1');
+                            fetch('/public?' + params.toString())
+                                .then(response => response.json())
+                                .then(data => {
+                                    updateDropdown('sector', data.sectors, filterSelects);
+                                    updateDropdown('municipality', data.municipalities, filterSelects);
+                                    updateDropdown('program', data.programs, filterSelects);
+                                    updateDropdown('type_of_programme', data.typeOfProgrammes, filterSelects);
+                                    updateDropdown('start_year', data.years, filterSelects);
+                                    updateDropdown('end_year', data.years, filterSelects);
+                                    updateDropdown('beneficiary', data.beneficiaries, filterSelects);
+                                    
+                                    // Set municipality filter value after dropdown update
+                                    const municipalitySelect = document.getElementById('municipality');
+                                    const options = municipalitySelect.options;
+                                    for (let i = 0; i < options.length; i++) {
+                                        if (options[i].value && 
+                                            options[i].value.toLowerCase() === municipalityName.toLowerCase()) {
+                                            municipalitySelect.value = options[i].value;
+                                            break;
+                                        }
+                                    }
+                                })
+                                .catch(error => console.error('Error updating filter options:', error));
+                            
+                            isLoading = false;
+                            
+                            // Highlight the selected municipality
+                            mapGroup.selectAll('.municipality').classed('active', false);
+                            d3.select(this).classed('active', true);
+                        })
+                        .catch(error => {
+                            console.error('Error loading filtered results:', error);
+                            isLoading = false;
+                        });
                 });
             
             // Add municipality labels
