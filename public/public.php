@@ -1100,13 +1100,9 @@ $hasMore = ($offset + $limit) < $totalProjects;
                             const parser = new DOMParser();
                             const doc = parser.parseFromString(html, 'text/html');
                             
-                            // Update stats cards
-                            const statsCards = doc.querySelectorAll('.stats-card');
-                            document.querySelectorAll('.stats-card').forEach((card, index) => {
-                                if (statsCards[index]) {
-                                    card.innerHTML = statsCards[index].innerHTML;
-                                }
-                            });
+                            // Update statistics
+                            const newStats = doc.querySelector('.statistics-top');
+                            document.querySelector('.statistics-top').innerHTML = newStats.innerHTML;
                             
                             // Update projects list
                             const newProjectsList = doc.querySelector('.projects-list');
