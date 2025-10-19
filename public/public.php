@@ -318,8 +318,8 @@ $hasMore = ($offset + $limit) < $totalProjects;
         }
         
         .public-nav .btn-home {
-            background-color: #FFCC00;
-            color: #003399;
+            /* background-color: #FFCC00; */
+            color: #fff;
             font-weight: 600;
         }
         
@@ -330,7 +330,6 @@ $hasMore = ($offset + $limit) < $totalProjects;
         .logo-box {
             width: 60px;
             height: 60px;
-            background-color: #FFCC00;
             border-radius: 8px;
             display: flex;
             align-items: center;
