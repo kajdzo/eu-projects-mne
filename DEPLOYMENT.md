@@ -9,6 +9,15 @@ This guide will help you deploy the EU Projects in MNE dashboard to WebSupport.s
 - PostgreSQL database (check with WebSupport.sk if included in your plan)
 - Domain configured and pointing to your hosting
 
+## Important Note: Clean URLs
+
+This application uses **clean URLs** (e.g., `/home`, `/public`, `/login` instead of `/home.php`, `/public.php`, `/login.php`) for better user experience.
+
+- **Production (WebSupport.sk)**: Clean URLs work perfectly via Apache `.htaccess` mod_rewrite
+- **Development (Replit)**: Clean URLs do NOT work with PHP built-in server - use `.php` extensions (e.g., `/home.php`)
+
+**All internal links in the application use clean URLs**, so they will work correctly in production but may not work in Replit development environment.
+
 ## Step-by-Step Deployment
 
 ### 1. Prepare Your Local Environment

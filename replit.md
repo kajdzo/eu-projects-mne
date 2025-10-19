@@ -37,7 +37,15 @@ None specified yet.
 - **Security**: Implements password hashing, input sanitization, and prepared statements for SQL injection prevention.
 - **Performance**: "Load More" pagination for public listings and optimized filter queries with case-insensitive deduplication for improved user experience.
 
-## Recent Changes (October 18, 2025)
+## Recent Changes (October 19, 2025)
+- **Clean URLs Implementation**: 
+  - Updated all internal application links to use clean URLs (without .php extension)
+  - `.htaccess` files configured for Apache mod_rewrite in production
+  - Clean URLs work perfectly on websupport.sk (production) but NOT in Replit development
+  - Router.php simplified - use .php extensions when testing in Replit (e.g., /home.php instead of /home)
+  - Documentation added to DEPLOYMENT.md explaining clean URL behavior
+
+## Previous Changes (October 18, 2025)
 - **Deployment Configuration**: Added complete deployment setup for WebSupport.sk shared hosting:
   - Created `.htaccess` files for both root and `/public/` directory with security rules, HTTPS redirect, and PHP settings
   - Added `.env.example` template for database configuration

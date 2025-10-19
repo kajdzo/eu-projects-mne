@@ -1,6 +1,7 @@
 <?php
 // Built-in PHP server router
 // This handles routing for the built-in PHP development server
+// Supports clean URLs (e.g., /home instead of /home.php)
 
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
@@ -9,25 +10,28 @@ if ($uri !== '/' && file_exists(__DIR__ . '/public' . $uri) && !is_dir(__DIR__ .
     return false;
 }
 
-// Clean URLs - if URI doesn't have .php extension but the .php file exists, serve it
-if (!preg_match('/\.php$/', $uri)) {
-    $phpFile = __DIR__ . '/public' . $uri . '.php';
-    if (file_exists($phpFile)) {
-        $_SERVER['SCRIPT_NAME'] = $uri . '.php';
-        $_SERVER['PHP_SELF'] = $uri;
-        require $phpFile;
+// Clean URLs - map extensionless paths to .php files
+if ($uri !== '/' && !preg_match('/\.php$/', $uri)) {
+    $phpFile = '/public' . $uri . '.php';
+    $fullPath = __DIR__ . $phpFile;
+    if (file_exists($fullPath)) {
+        // Set server variables as if the .php file was requested
+        $_SERVER['SCRIPT_FILENAME'] = $fullPath;
+        $_SERVER['SCRIPT_NAME'] = $phpFile;
+        $_SERVER['PHP_SELF'] = $phpFile;
+        // Change to public directory so relative paths work
+        chdir(__DIR__ . '/public');
+        // Include the file and stop processing
+        include $fullPath;
         exit;
     }
 }
 
-// If URI has .php extension, serve it directly
+// Serve .php files directly
 if (preg_match('/\.php$/', $uri)) {
-    $file = __DIR__ . '/public' . $uri;
-    if (file_exists($file)) {
-        require $file;
-        exit;
-    }
+    return false;
 }
 
 // Fallback to index.php for root or not found
+chdir(__DIR__ . '/public');
 require __DIR__ . '/public/index.php';
