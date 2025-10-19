@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+            <meta content="width=device-width, initial-scale=1.0" name="viewport">
+                <title>
+                    Montenegro Interactive Map
+                </title>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.0/d3.min.js">
+                </script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js">
+                </script>
+                <style>
+                    body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .municipality {
+            fill: #3498db;
+            stroke: #fff;
+            stroke-width: 1px;
+            transition: all 0.3s ease;
+        }
+        .municipality:hover {
+            fill: #2980b9;
+            stroke-width: 2px;
+            cursor: pointer;
+        }
+        .municipality.active {
+            fill: #e74c3c;
+        }
+        .tooltip {
+            position: absolute;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            z-index: 10;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 15px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+            font-size: 16px;
+        }
+        .municipality-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .municipality-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .municipality-item:hover {
+            background: #e9ecef;
+        }
+        .municipality-item.active {
+            background: #3498db;
+            color: white;
+        }
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: none;
+        }
+        .info-panel.active {
+            display: block;
+        }
+        .info-panel h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .region-north {
+            fill: #3498db;
+        }
+        .region-central {
+            fill: #e74c3c;
+        }
+        .region-coastal {
+            fill: #2ecc71;
+        }
+        .municipality-label {
+			font-size: 10px;
+			font-weight: bold;
+			fill: white;
+			text-anchor: middle;
+			pointer-events: none;
+			text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+			font-family: Arial, sans-serif;
+		}
+                </style>
+            </meta>
+        </meta>
+    </head>
+    <body>
+        <div class="container">
+            <h1>
+                Montenegro Interactive Map
+            </h1>
+            <div class="controls">
+                <input class="search-box" placeholder="Search for a municipality..." type="text">
+                </input>
+            </div>
+            <div class="map-container">
+                <div class="tooltip">
+                </div>
+                <!-- Map will be rendered here by D3 -->
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3498db;">
+                    </div>
+                    <span>
+                        Northern Region
+                    </span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e74c3c;">
+                    </div>
+                    <span>
+                        Central Region
+                    </span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2ecc71;">
+                    </div>
+                    <span>
+                        Coastal Region
+                    </span>
+                </div>
+            </div>
+            <div class="info-panel">
+                <h3 id="municipality-name">
+                </h3>
+                <p id="municipality-info">
+                </p>
+            </div>
+            <div class="municipality-list">
+                <!-- Municipality list will be populated by JavaScript -->
+            </div>
+        </div>
+        <script>
+            // Montenegro municipalities data with regions
+        const municipalities = [
+            { id: "ME01", name: "Andrijevica", region: "north" },
+            { id: "ME02", name: "Bar", region: "coastal" },
+            { id: "ME03", name: "Berane", region: "north" },
+            { id: "ME04", name: "Bijelo Polje", region: "north" },
+            { id: "ME05", name: "Budva", region: "coastal" },
+            { id: "ME06", name: "Cetinje", region: "central" },
+            { id: "ME07", name: "Danilovgrad", region: "central" },
+            { id: "ME08", name: "Herceg Novi", region: "coastal" },
+            { id: "ME09", name: "Kolašin", region: "north" },
+            { id: "ME10", name: "Kotor", region: "coastal" },
+            { id: "ME11", name: "Mojkovac", region: "north" },
+            { id: "ME12", name: "Nikšic", region: "central" },
+            { id: "ME13", name: "Plav", region: "north" },
+            { id: "ME14", name: "Pljevlja", region: "north" },
+            { id: "ME15", name: "Plužine", region: "north" },
+            { id: "ME16", name: "Podgorica", region: "central" },
+            { id: "ME17", name: "Rožaje", region: "north" },
+            { id: "ME18", name: "Šavnik", region: "north" },
+            { id: "ME19", name: "Tivat", region: "coastal" },
+            { id: "ME20", name: "Ulcinj", region: "coastal" },
+            { id: "ME21", name: "Žabljak", region: "north" },
+            { id: "ME22", name: "Gusinje", region: "north" },
+          	{ id: "ME23", name: "Tuzi", region: "central" },
+			{ id: "ME24", name: "Petnjica", region: "north" },
+            { id: "ME25", name: "Zeta", region: "central" }
+        ];
+
+        // Additional information about municipalities
+        const municipalityInfo = {
+            "Andrijevica": "Located in northern Montenegro, known for its mountainous terrain and traditional architecture.",
+            "Bar": "A coastal town with the largest seaport in Montenegro and rich historical heritage.",
+            "Berane": "Situated in the Lim River valley, known for its cultural and historical monuments.",
+            "Bijelo Polje": "A northern municipality known for its agricultural production and cultural diversity.",
+            "Budva": "Popular tourist destination on the Adriatic coast with beautiful beaches and historic old town.",
+            "Cetinje": "The historical capital of Montenegro, known for its museums and cultural significance.",
+            "Danilovgrad": "Located near the capital Podgorica, known for the Bjelopavlići plain.",
+            "Herceg Novi": "A coastal town at the entrance to the Bay of Kotor, known for its fortresses and Mediterranean architecture.",
+            "Kolašin": "A mountain resort town popular for winter sports and outdoor activities.",
+            "Kotor": "A UNESCO World Heritage site with a well-preserved medieval old town on the Bay of Kotor.",
+            "Mojkovac": "Located in northern Montenegro, known for its mining history and natural beauty.",
+            "Nikšic": "The second largest city in Montenegro, known for its industry and cultural events.",
+            "Plav": "Situated in the Prokletije mountains, known for Lake Plav and outdoor recreation.",
+            "Pljevlja": "The northernmost municipality, known for mining and thermal power generation.",
+            "Plužine": "Located near the Piva Lake and Tara River Canyon, known for its natural beauty.",
+            "Podgorica": "The capital and largest city of Montenegro, the country's administrative and economic center.",
+            "Rožaje": "Situated in the northeast, known for its multicultural population and Islamic heritage.",
+            "Šavnik": "The least populated municipality, located in northwestern Montenegro.",
+            "Tivat": "A coastal town with a luxury marina and naval heritage.",
+            "Ulcinj": "The southernmost coastal town, known for its long sandy beach and multicultural history.",
+            "Žabljak": "Located in the Durmitor National Park, the highest town in the Balkans.",
+            "Gusinje": "A newly established municipality in the Prokletije mountains, known for its natural springs.",
+            "Petnjica": "A newly established municipality in the northeast, known for its rural character.",
+            "Tuzi": "A newly established municipality near Podgorica, known for Lake Skadar and cultural diversity."
+        };
+
+        // Set up the SVG container
+        const width = document.querySelector('.map-container').clientWidth;
+        const height = document.querySelector('.map-container').clientHeight;
+        
+        const svg = d3.select('.map-container')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+        
+        const tooltip = d3.select('.tooltip');
+        
+        // Create a group for the map
+        const mapGroup = svg.append('g');
+        
+        // Set up projection - adjust for Montenegro's geography
+        const projection = d3.geoMercator()
+            .center([19.25, 42.75]) // Center on Montenegro
+            .scale(12000)
+            .translate([width / 2, height / 2]);
+        
+        const path = d3.geoPath().projection(projection);
+        
+        // Load and display the GeoJSON data
+      // Load and display the GeoJSON data
+d3.json("me_1757319500347 (1).json").then(function(geojson) {
+    // Draw municipalities
+    mapGroup.selectAll('.municipality')
+        .data(geojson.features)
+        .enter()
+        .append('path')
+        .attr('class', function(d) {
+            const municipality = municipalities.find(m => m.id === d.properties.id);
+            return `municipality region-${municipality ? municipality.region : 'central'}`;
+        })
+        .attr('d', path)
+        .on('mouseover', function(event, d) {
+            const municipality = municipalities.find(m => m.id === d.properties.id);
+            if (municipality) {
+                tooltip
+                    .style('opacity', 1)
+                    .html(`<strong>${municipality.name}</strong>`)
+                    .style('left', (event.pageX + 10) + 'px')
+                    .style('top', (event.pageY - 28) + 'px');
+                
+                d3.select(this).classed('active', true);
+            }
+        })
+        .on('mouseout', function(event, d) {
+            tooltip.style('opacity', 0);
+            d3.select(this).classed('active', false);
+        })
+        .on('click', function(event, d) {
+            const municipality = municipalities.find(m => m.id === d.properties.id);
+            if (municipality) {
+                showMunicipalityInfo(municipality.name);
+                
+                // Highlight the selected municipality
+                mapGroup.selectAll('.municipality').classed('active', false);
+                d3.select(this).classed('active', true);
+                
+                // Update list highlighting
+                d3.selectAll('.municipality-item').classed('active', false);
+                d3.selectAll('.municipality-item').filter(function() {
+                    return d3.select(this).attr('data-name') === municipality.name;
+                }).classed('active', true);
+            }
+        });
+    
+    // Add municipality labels
+    mapGroup.selectAll('.municipality-label')
+        .data(geojson.features)
+        .enter()
+        .append('text')
+        .attr('class', 'municipality-label')
+        .attr('transform', function(d) {
+            // Get the centroid of each feature for label placement
+            const centroid = path.centroid(d);
+            return `translate(${centroid[0]}, ${centroid[1]})`;
+        })
+        .attr('text-anchor', 'middle')
+        .attr('dy', '0.35em')
+        .text(function(d) {
+            const municipality = municipalities.find(m => m.id === d.properties.id);
+            return municipality ? municipality.name : '';
+        })
+        .style('font-size', '10px')
+        .style('font-weight', 'bold')
+        .style('fill', 'white')
+        .style('pointer-events', 'none') // Make sure labels don't interfere with mouse events
+        .style('text-shadow', '1px 1px 2px rgba(0,0,0,0.7)') // Add text shadow for better readability
+        .style('font-family', 'Arial, sans-serif');
+    
+    // Populate the municipality list
+    const listContainer = d3.select('.municipality-list');
+    
+    listContainer.selectAll('.municipality-item')
+        .data(municipalities)
+        .enter()
+        .append('div')
+        .attr('class', 'municipality-item')
+        .attr('data-name', d => d.name)
+        .text(d => d.name)
+        .on('click', function(event, d) {
+            showMunicipalityInfo(d.name);
+            
+            // Highlight the selected municipality on the map
+            mapGroup.selectAll('.municipality').classed('active', false);
+            mapGroup.selectAll('.municipality').filter(function(mapD) {
+                return mapD.properties.id === d.id;
+            }).classed('active', true);
+            
+            // Update list highlighting
+            d3.selectAll('.municipality-item').classed('active', false);
+            d3.select(this).classed('active', true);
+        });
+    
+    // Set up search functionality
+    const searchBox = d3.select('.search-box');
+    
+    searchBox.on('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        // Filter municipalities in the list
+        listContainer.selectAll('.municipality-item')
+            .style('display', function(d) {
+                return d.name.toLowerCase().includes(searchTerm) ? 'block' : 'none';
+            });
+        
+        // Highlight matching municipalities on the map
+        mapGroup.selectAll('.municipality')
+            .classed('active', function(d) {
+                const municipality = municipalities.find(m => m.id === d.properties.id);
+                return municipality && municipality.name.toLowerCase().includes(searchTerm);
+            });
+    });
+}).catch(function(error) {
+    console.error("Error loading GeoJSON:", error);
+    // Create a fallback visualization if the GeoJSON fails to load
+    createFallbackMap();
+});
+        </script>
+    </body>
+</html>
