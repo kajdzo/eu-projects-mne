@@ -1091,6 +1091,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
                     
                     // Set loading state
                     isLoading = true;
+                    currentOffset = 0; // Reset pagination
                     
                     // Fetch filtered results directly
                     fetch('/public?' + params.toString())
@@ -1156,6 +1157,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
                                 })
                                 .catch(error => console.error('Error updating filter options:', error));
                             
+                            currentOffset = <?= $limit ?>;
                             isLoading = false;
                             
                             // Highlight the selected municipality
