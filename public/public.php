@@ -916,8 +916,11 @@ $hasMore = ($offset + $limit) < $totalProjects;
                     document.querySelector('.projects-list').innerHTML = newProjectsList.innerHTML;
                     
                     // Update project count in heading
-                    const newHeading = doc.querySelector('.results-section h2:nth-of-type(2)');
-                    document.querySelector('.results-section h2:nth-of-type(2)').textContent = newHeading.textContent;
+                    const newHeading = doc.querySelector('.results-section h2');
+                    const currentHeading = document.querySelector('.results-section h2');
+                    if (newHeading && currentHeading) {
+                        currentHeading.textContent = newHeading.textContent;
+                    }
                     
                     // Update or remove Load More button
                     const oldLoadMoreContainer = document.querySelector('#loadMoreBtn')?.parentElement;
