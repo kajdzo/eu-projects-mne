@@ -34,7 +34,7 @@ if ($project['end_date']) {
 <body>
     <header class="public-header">
         <div class="container">
-            <h1>🇪🇺 EU Projects in Montenegro</h1>
+            <h1><img src="/eu-logo-white.png" alt="EU Logo" style="height: 40px; width: auto; vertical-align: middle; margin-right: 15px;">EU Projects in Montenegro</h1>
             <nav>
                 <a href="/home">Home</a>
                 <a href="/public">Projects</a>

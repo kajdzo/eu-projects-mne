@@ -605,7 +605,7 @@ $hasMore = ($offset + $limit) < $totalProjects;
     <div class="public-header">
         <div class="public-header-container">
             <div class="logo-placeholder">
-                <div class="logo-box">🇪🇺</div>
+                <div class="logo-box"><img src="/eu-logo-white.png" alt="EU Logo" style="height: 50px; width: auto;"></div>
                 <div>EU Projects in Montenegro</div>
             </div>
             <div class="public-nav">

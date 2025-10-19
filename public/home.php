@@ -234,7 +234,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
-            <h1>🇪🇺 EU Projects in Montenegro</h1>
+            <h1><img src="/eu-logo-white.png" alt="EU Logo" style="height: 60px; width: auto; vertical-align: middle; margin-right: 20px;">EU Projects in Montenegro</h1>
             <p>Explore EU-funded projects contributing to the development and progress of Montenegro</p>
             <div class="hero-buttons">
                 <a href="/public" class="hero-btn hero-btn-primary">Explore Projects</a>
